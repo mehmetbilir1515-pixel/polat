@@ -32,8 +32,22 @@ jobs:
 
       - run: flutter pub get
 
+      # Statik analiz: derleme hatalarını erken ve ayrıntılı gösterir (sonucu engellemez).
+      - name: Analiz
+        continue-on-error: true
+        run: |
+          flutter analyze --no-fatal-infos --no-fatal-warnings 2>&1 | tee analyze.log || {
+            echo "::error title=flutter analyze::$(grep -E 'error|Error' analyze.log | head -n 30 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+            exit 1
+          }
+
       - name: Testler
-        run: flutter test
+        run: |
+          set -o pipefail
+          flutter test 2>&1 | tee test.log || {
+            echo "::error title=flutter test::$(tail -n 60 test.log | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+            exit 1
+          }
 
       - name: APK derle
         run: flutter build apk --release

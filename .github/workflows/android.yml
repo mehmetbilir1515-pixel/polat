@@ -27,10 +27,13 @@ jobs:
         run: |
           flutter create --platforms=android,ios --org com.polat --project-name polat_rd .
           # flutter create kendi örnek dosyalarını yazmış olabilir; bizimkileri geri yükle.
-          git checkout -- lib test pubspec.yaml
+          git checkout -- lib test pubspec.yaml assets
           sed -i 's/android:label="[^"]*"/android:label="POLAT R\&amp;D"/' android/app/src/main/AndroidManifest.xml
 
       - run: flutter pub get
+
+      - name: Uygulama simgesini üret
+        run: dart run flutter_launcher_icons
 
       # Statik analiz: derleme hatalarını erken ve ayrıntılı gösterir (sonucu engellemez).
       - name: Analiz

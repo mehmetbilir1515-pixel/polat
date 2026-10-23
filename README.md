@@ -4,7 +4,7 @@ Android ve iOS için mobil hesaplama araçları uygulaması (Flutter).
 
 ## Hesaplama araçları (ilk sürüm)
 
-1. **G-Force (RCF)**: kasa çapı ve devirden santrifüj kuvveti
+1. **G-Force (RCF)**: tambur iç çapı ve devirden santrifüj kuvveti
 2. **Diferansiyel hız**: ana tahrik, arka tahrik, dişli kutusu oranı ve yöne göre hız farkı
 3. **Debi dönüştürücü**: GPM, LPM, m³/saat, BPD
 4. **Kasnak hızı**: motor devri ve kasnak çaplarından çıkış mili devri

@@ -7,6 +7,7 @@ void main() {
     await tester.pumpWidget(const PolatApp());
 
     expect(find.text('POLAT R&D'), findsOneWidget);
+    expect(find.byType(Image), findsOneWidget); // P logosu
     expect(find.text('G-Force (RCF) Hesaplayıcı'), findsOneWidget);
   });
 

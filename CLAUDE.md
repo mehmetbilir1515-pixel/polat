@@ -21,6 +21,9 @@ Bu dosya, bu depoda çalışan yapay zekâ asistanı için kuralları içerir.
 - `lib/models/calculator_spec.dart`: araç tanımı modelleri (girdi alanları, birimler, sonuçlar).
 - `lib/calculator_specs.dart`: 7 aracın arayüz tanımları. Yeni araç = yeni hesap fonksiyonu + yeni `CalculatorSpec` + test.
 - `lib/screens/`: ana ekran ve tanımdan otomatik üretilen hesaplama ekranı.
+- `lib/theme.dart`: renk teması. Ana renk RAL 5004 (siyah mavi), vurgu rengi RAL 1003 (sinyal sarısı).
+- `assets/icon/`: P harfi logosu (uygulama simgesi). CI, `flutter_launcher_icons` ile Android/iOS simgelerini üretir.
+- Terminoloji: arayüzde "kasa" yerine **"tambur"** yazılır (G-Force aracında "Tambur iç çapı").
 - `test/`: birim ve widget testleri.
 - `.github/workflows/android.yml`: testleri çalıştırır ve Android APK'yı bulutta derler.
 

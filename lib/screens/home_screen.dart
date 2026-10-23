@@ -11,7 +11,24 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('POLAT R&D')),
+      appBar: AppBar(
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.asset(
+                'assets/icon/icon.png',
+                width: 32,
+                height: 32,
+                semanticLabel: 'POLAT R&D logosu',
+              ),
+            ),
+            const SizedBox(width: 12),
+            const Text('POLAT R&D'),
+          ],
+        ),
+      ),
       body: ListView.separated(
         padding: const EdgeInsets.all(16),
         itemCount: calculatorSpecs.length,

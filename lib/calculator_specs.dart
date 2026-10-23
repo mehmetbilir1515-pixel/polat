@@ -28,12 +28,12 @@ final List<CalculatorSpec> calculatorSpecs = [
   CalculatorSpec(
     id: 'g-force',
     title: 'G-Force (RCF) Hesaplayıcı',
-    description: 'Kasa çapı ve devirden santrifüj kuvvetini (g) hesaplar.',
+    description: 'Tambur iç çapı ve devirden santrifüj kuvvetini (g) hesaplar.',
     icon: Icons.rotate_right,
     numberFields: const [
       NumberFieldSpec(
         key: 'diameter',
-        label: 'Kasa çapı',
+        label: 'Tambur iç çapı',
         units: [
           UnitOption('mm', 0.001),
           UnitOption('cm', 0.01),
@@ -66,7 +66,7 @@ final List<CalculatorSpec> calculatorSpecs = [
   CalculatorSpec(
     id: 'differential-speed',
     title: 'Diferansiyel Hız Hesaplayıcı',
-    description: 'Kasa ile helezon arasındaki hız farkını hesaplar.',
+    description: 'Tambur ile helezon arasındaki hız farkını hesaplar.',
     icon: Icons.compare_arrows,
     choiceFields: const [
       ChoiceFieldSpec(

@@ -3,7 +3,7 @@ import 'validation.dart';
 /// Arka tahrik dönüş yönü.
 enum BackDriveRotation { forward, reverse }
 
-/// Kasa (bowl) ile helezon (conveyor) arasındaki diferansiyel hız, RPM.
+/// Tambur (bowl) ile helezon (conveyor) arasındaki diferansiyel hız, RPM.
 ///
 /// İleri yönde: (ana − arka) / oran. Geri yönde: (ana + arka) / oran.
 /// Sonuç yalnızca matematikseldir; üretici özelliklerine göre doğrulanmalıdır.

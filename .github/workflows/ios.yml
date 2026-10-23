@@ -1,0 +1,51 @@
+name: iOS build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      # Depoda android/ ve ios/ klasörleri yok; burada üretilir.
+      - name: Platform klasörlerini üret
+        run: |
+          flutter create --platforms=android,ios --org com.polat --project-name polat_rd .
+          # flutter create kendi örnek dosyalarını yazmış olabilir; bizimkileri geri yükle.
+          git checkout -- lib test pubspec.yaml assets
+          # Ana ekranda görünen uygulama adı
+          /usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName 'POLAT R&D'" ios/Runner/Info.plist \
+            || /usr/libexec/PlistBuddy -c "Add :CFBundleDisplayName string 'POLAT R&D'" ios/Runner/Info.plist
+
+      - run: flutter pub get
+
+      - name: Uygulama simgesini üret
+        run: dart run flutter_launcher_icons
+
+      - name: Testler
+        run: flutter test
+
+      - name: iOS derle (imzasız)
+        run: flutter build ios --release --no-codesign
+
+      - name: IPA paketle (imzasız)
+        run: |
+          mkdir -p Payload
+          cp -R build/ios/iphoneos/Runner.app Payload/Runner.app
+          zip -qr polat-rd-ios-unsigned.ipa Payload
+          ls -la polat-rd-ios-unsigned.ipa
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: polat-rd-ios-unsigned-ipa
+          path: polat-rd-ios-unsigned.ipa

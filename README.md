@@ -53,7 +53,11 @@ flutter run
 
 ## iOS
 
-iOS uygulaması için derleme ve cihaza kurulum, Apple'ın ücretli geliştirici hesabını ve imzalama ayarlarını gerektirir. Bu aşama henüz kurulmadı; Android sürümü çalıştıktan sonra eklenecek.
+**iOS build** iş akışı (GitHub Actions, macOS) testleri çalıştırır ve imzasız bir `.ipa` üretir. Dosya, Actions sayfasında **Artifacts** bölümündeki `polat-rd-ios-unsigned-ipa` adıyla iner.
+
+İmzasız `.ipa` iPhone'a doğrudan kurulamaz; Apple imzası gerekir. İki yol var:
+- **Ücretsiz Apple Kimliği ile (deneme):** Windows için Sideloadly gibi bir araç `.ipa` dosyasını kendi Apple Kimliğinle imzalayıp telefona kurar. Uygulama 7 gün sonra süresi dolar ve yeniden kurulması gerekir.
+- **Apple Developer Program (yıllık ücretli):** TestFlight üzerinden kalıcı kurulum ve App Store yayını için gerekir.
 
 ## Katkı kuralı
 

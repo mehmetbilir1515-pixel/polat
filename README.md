@@ -1,39 +1,59 @@
-# polat
+# POLAT R&D
 
-Kişisel yapay zekâ destekli yazılım geliştirme projesi (Python).
+Android ve iOS için mobil hesaplama araçları uygulaması (Flutter).
 
-## Durum
+## Hesaplama araçları (ilk sürüm)
 
-Başlangıç aşaması. Proje amacı ve kapsamı henüz tanımlanmadı.
+1. **G-Force (RCF)**: kasa çapı ve devirden santrifüj kuvveti
+2. **Diferansiyel hız**: ana tahrik, arka tahrik, dişli kutusu oranı ve yöne göre hız farkı
+3. **Debi dönüştürücü**: GPM, LPM, m³/saat, BPD
+4. **Kasnak hızı**: motor devri ve kasnak çaplarından çıkış mili devri
+5. **Kayış uzunluğu**: kasnak çapları ve eksen mesafesinden tahmini kayış boyu
+6. **Throughput**: debi, yoğunluk, katı oranı ve çalışma saatinden kuru katı (ton/gün)
+7. **Kasnak boyutu**: hedef devir için gereken kasnak çapı
+
+> Sonuçlar mühendislik tahminidir. Ekipman değişikliği veya sipariş öncesinde üretici/tedarikçi bilgileriyle doğrulayın.
 
 ## Klasör yapısı
 
 ```
 polat/
-├── src/        # Uygulama kodu
-├── tests/      # Testler
-├── CLAUDE.md   # Yapay zekâ asistanı için çalışma kuralları
+├── lib/
+│   ├── calculators/        # Saf hesaplama fonksiyonları
+│   ├── models/             # Araç tanım modelleri
+│   ├── screens/            # Ana ekran ve hesaplama ekranı
+│   ├── calculator_specs.dart
+│   ├── format.dart
+│   ├── app.dart
+│   └── main.dart
+├── test/                   # Birim ve widget testleri
+├── .github/workflows/      # Android APK derleme (GitHub Actions)
+├── pubspec.yaml
+├── CLAUDE.md               # Yapay zekâ asistanı için çalışma kuralları
 └── README.md
 ```
 
-## Kurulum
+## Android uygulamasını indirme (terminalsiz)
 
-```bash
-python -m venv .venv
-# Windows (PowerShell):
-.venv\Scripts\Activate.ps1
-# Windows (cmd):
-.venv\Scripts\activate.bat
-pip install -e ".[dev]"
+1. Depoda **Actions** sekmesini aç.
+2. **Android build** iş akışının son başarılı çalışmasını seç.
+3. Sayfanın altındaki **Artifacts** bölümünden `polat-rd-android-apk` dosyasını indir.
+4. İndirilen ZIP'in içindeki `app-release.apk` dosyasını Android telefona kopyalayıp aç (bilinmeyen kaynaklardan kuruluma izin gerekebilir).
+
+## Geliştirme (kendi bilgisayarında)
+
+[Flutter SDK](https://docs.flutter.dev/get-started/install/windows) kurulu olmalı.
+
+```powershell
+flutter create --platforms=android,ios --org com.polat --project-name polat_rd .   # bir kez
+flutter pub get
+flutter test
+flutter run
 ```
 
-> Not: `pyproject.toml` henüz yok. Proje bağımlılıkları belli olunca eklenecek.
+## iOS
 
-## Testleri çalıştırma
-
-```bash
-python -m pytest
-```
+iOS uygulaması için derleme ve cihaza kurulum, Apple'ın ücretli geliştirici hesabını ve imzalama ayarlarını gerektirir. Bu aşama henüz kurulmadı; Android sürümü çalıştıktan sonra eklenecek.
 
 ## Katkı kuralı
 

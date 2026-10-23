@@ -10,20 +10,35 @@ Bu dosya, bu depoda çalışan yapay zekâ asistanı için kuralları içerir.
 
 ## Proje
 
-- Dil: Python
-- Kaynak kod: `src/`
-- Testler: `tests/` (pytest)
-- Kullanıcı Windows 11 kullanıyor; yol ve komut örneklerinde PowerShell uyumluluğunu gözet.
+- Uygulama adı: **POLAT R&D** — Android ve iOS için mobil hesaplama araçları uygulaması.
+- Teknoloji: Flutter (Dart). Paket adı: `polat_rd`.
+- İlk araç seti, santrifüj ve mekanik hesaplayıcılardır: G-Force (RCF), diferansiyel hız, debi dönüştürücü, kasnak hızı, kayış uzunluğu, throughput, kasnak boyutu.
+- Kullanıcı Windows 11 kullanıyor; komut örneklerinde PowerShell uyumluluğunu gözet. Kullanıcı mümkün olduğunca fareyle ilerlemeyi tercih ediyor; terminal gerektiren adımları en aza indir.
+
+## Yapı
+
+- `lib/calculators/`: saf hesaplama fonksiyonları (arayüzden bağımsız, test edilebilir). Geçersiz girdide `CalculationException` fırlatır.
+- `lib/models/calculator_spec.dart`: araç tanımı modelleri (girdi alanları, birimler, sonuçlar).
+- `lib/calculator_specs.dart`: 7 aracın arayüz tanımları. Yeni araç = yeni hesap fonksiyonu + yeni `CalculatorSpec` + test.
+- `lib/screens/`: ana ekran ve tanımdan otomatik üretilen hesaplama ekranı.
+- `test/`: birim ve widget testleri.
+- `.github/workflows/android.yml`: testleri çalıştırır ve Android APK'yı bulutta derler.
 
 ## Çalışma biçimi
 
 - Küçük, anlaşılır adımlarla ilerle; büyük değişikliklerden önce kısa bir plan sun.
-- Yeni davranış eklerken ilgili testi de yaz.
-- Yanıtlar ve açıklamalar Türkçe olsun; kod ve değişken adları İngilizce kalsın.
-- Gizli bilgileri (API anahtarı, parola) asla koda veya commit'e koyma; `.env` kullan ve `.gitignore`'da tut.
+- Yeni davranış eklerken ilgili testi de yaz. Test beklentilerini koddan değil, bağımsız bir hesaptan (ör. ayrı bir referans betik) türet.
+- Yanıtlar ve açıklamalar Türkçe olsun; kod ve değişken adları İngilizce kalsın. Arayüz metinleri Türkçe.
+- Gizli bilgileri (API anahtarı, parola, imzalama anahtarı) asla koda veya commit'e koyma.
+- centrifugeco.com sitesinden yalnızca hangi araçların var olduğu ve genel girdi/çıktı mantığı referans alınır; sitenin metinleri, tasarımı veya görselleri kopyalanmaz.
+- Bulut çalışma alanında Flutter SDK indirilemiyor; Dart kodu orada çalıştırılamaz. Doğrulama GitHub Actions üzerinde yapılır; Actions sonucunu kontrol etmeden "çalışıyor" deme.
 
 ## Komutlar
 
-```bash
-python -m pytest        # testleri çalıştır
+```powershell
+flutter create --platforms=android,ios --org com.polat --project-name polat_rd .   # android/ ve ios/ klasörlerini üretir (bir kez)
+flutter pub get
+flutter test                  # testleri çalıştır
+flutter run                   # bağlı cihaz veya emülatörde çalıştır
+flutter build apk --release   # Android APK
 ```

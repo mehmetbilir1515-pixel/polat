@@ -1,0 +1,44 @@
+name: Android build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      # Depoda android/ ve ios/ klasörleri yok; burada üretilir.
+      - name: Platform klasörlerini üret
+        run: |
+          flutter create --platforms=android,ios --org com.polat --project-name polat_rd .
+          # flutter create kendi örnek dosyalarını yazmış olabilir; bizimkileri geri yükle.
+          git checkout -- lib test pubspec.yaml
+          sed -i 's/android:label="[^"]*"/android:label="POLAT R\&amp;D"/' android/app/src/main/AndroidManifest.xml
+
+      - run: flutter pub get
+
+      - name: Testler
+        run: flutter test
+
+      - name: APK derle
+        run: flutter build apk --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: polat-rd-android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk

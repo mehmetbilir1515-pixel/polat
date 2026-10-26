@@ -4,12 +4,16 @@ Android ve iOS için mobil hesaplama araçları uygulaması (Flutter).
 
 ## Hesaplama araçları (ilk sürüm)
 
+**POLAT DECANTER 3000G** (ana ekranda ikinci sırada): dekantör modelini (S200 … SX920) seçince, 3000G için gereken devre göre arka rulman, şanzıman limitleri ve tambur dayanımı (Sb/Sf) kontrol edilir; her kart geçti/kaldı olarak gösterilir. S200, S300 ve S350 zaten 3000G'yi sağlar.
+
+**Dekantör Kütle Denkliği** (ana ekranda ilk sırada): ürün debisi (m³/h), yoğunluk (kg/m³) ve besleme/kek/sentrat kuru katı oranlarından kek ve sentrat kütle akışlarını, polimer tüketimini (kg/tDS), yakalama verimini, günlük değerleri ve % → AKM (mg/L) dönüşümünü hesaplar. Değerler yazıldıkça sonuçlar anında güncellenir.
+
 1. **G-Force (RCF)**: tambur iç çapı ve devirden santrifüj kuvveti
 2. **Diferansiyel hız**: ana tahrik, arka tahrik, dişli kutusu oranı ve yöne göre hız farkı
 3. **Debi dönüştürücü**: GPM, LPM, m³/saat, BPD
 4. **Kasnak hızı**: motor devri ve kasnak çaplarından çıkış mili devri
 5. **Kayış uzunluğu**: kasnak çapları ve eksen mesafesinden tahmini kayış boyu
-6. **Throughput**: debi, yoğunluk, katı oranı ve çalışma saatinden kuru katı (ton/gün)
+6. **Throughput**: debi (m³/h), yoğunluk (kg/m³), katı oranı ve çalışma saatinden kuru katı (ton/gün)
 7. **Kasnak boyutu**: hedef devir için gereken kasnak çapı
 
 > Sonuçlar mühendislik tahminidir. Ekipman değişikliği veya sipariş öncesinde üretici/tedarikçi bilgileriyle doğrulayın.

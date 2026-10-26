@@ -3,6 +3,7 @@ import 'package:polat_rd/calculators/belt_length.dart';
 import 'package:polat_rd/calculators/differential_speed.dart';
 import 'package:polat_rd/calculators/flow_rate.dart';
 import 'package:polat_rd/calculators/g_force.dart';
+import 'package:polat_rd/calculators/mass_balance.dart';
 import 'package:polat_rd/calculators/pulley.dart';
 import 'package:polat_rd/calculators/throughput.dart';
 import 'package:polat_rd/calculators/validation.dart';
@@ -202,35 +203,36 @@ void main() {
   });
 
   group('Throughput', () {
-    test('100 GPM, 10 lb/gal, %5, 24 saat', () {
+    test('100 m³/h, 1000 kg/m³, %5, 24 saat', () {
       final r = dryTonsThroughput(
-        feedGpm: 100,
-        slurryDensityLbPerGal: 10,
+        feedM3h: 100,
+        slurryDensityKgPerM3: 1000,
         solidsWeightPercent: 5,
         hoursPerDay: 24,
       );
-      expect(r.totalGallons, closeTo(144000, 1e-6));
-      expect(r.slurryMassLb, closeTo(1440000, 1e-6));
-      expect(r.dryMassLb, closeTo(72000, 1e-6));
-      expect(r.dryTonsPerDay, closeTo(36, 1e-9));
+      expect(r.totalVolumeM3, closeTo(2400, 1e-6));
+      expect(r.slurryMassKg, closeTo(2400000, 1e-6));
+      expect(r.dryMassKg, closeTo(120000, 1e-6));
+      expect(r.dryTonsPerDay, closeTo(120, 1e-9));
     });
 
-    test('50 GPM, 8,7 lb/gal, %12, 20 saat', () {
+    test('20 m³/h, 1050 kg/m³, %4, 20 saat', () {
       final r = dryTonsThroughput(
-        feedGpm: 50,
-        slurryDensityLbPerGal: 8.7,
-        solidsWeightPercent: 12,
+        feedM3h: 20,
+        slurryDensityKgPerM3: 1050,
+        solidsWeightPercent: 4,
         hoursPerDay: 20,
       );
-      expect(r.totalGallons, closeTo(60000, 1e-6));
-      expect(r.dryTonsPerDay, closeTo(31.32, 1e-9));
+      expect(r.totalVolumeM3, closeTo(400, 1e-6));
+      expect(r.slurryMassKg, closeTo(420000, 1e-6));
+      expect(r.dryTonsPerDay, closeTo(16.8, 1e-9));
     });
 
     test('katı oranı 0-100 dışında olamaz', () {
       expect(
         () => dryTonsThroughput(
-          feedGpm: 50,
-          slurryDensityLbPerGal: 8.7,
+          feedM3h: 20,
+          slurryDensityKgPerM3: 1050,
           solidsWeightPercent: 101,
           hoursPerDay: 20,
         ),
@@ -241,11 +243,136 @@ void main() {
     test('günlük saat 24 saati aşamaz', () {
       expect(
         () => dryTonsThroughput(
-          feedGpm: 50,
-          slurryDensityLbPerGal: 8.7,
+          feedM3h: 20,
+          slurryDensityKgPerM3: 1050,
           solidsWeightPercent: 10,
           hoursPerDay: 25,
         ),
+        throwsA(isA<CalculationException>()),
+      );
+    });
+  });
+
+  group('Dekantör kütle denkliği', () {
+    // Ekran görüntüsündeki hesap sayfasının değerleri.
+    MassBalanceResult sheet() => decanterMassBalance(
+          feedFlowM3h: 7,
+          feedDensityKgPerM3: 1000,
+          feedSolidsPercent: 1.13,
+          cakeSolidsPercent: 18,
+          centrateSolidsPercent: 0.05,
+          polymerConcentrationPercent: 0.1,
+          polymerSolutionLph: 800,
+        );
+
+    test('besleme: 7000 kg/h, 79,1 kg/h kuru katı, 6920,9 kg/h su', () {
+      final r = sheet();
+      expect(r.feedMassKgH, closeTo(7000, 1e-9));
+      expect(r.feedSolidsKgH, closeTo(79.1, 1e-9));
+      expect(r.feedWaterPercent, closeTo(98.87, 1e-9));
+      expect(r.feedWaterKgH, closeTo(6920.9, 1e-9));
+    });
+
+    test('kek çıkışı: 421,17 kg/h, 75,81 kg/h kuru katı, 345,36 kg/h su', () {
+      final r = sheet();
+      expect(r.cakeMassKgH, closeTo(421.16992, 1e-4));
+      expect(r.cakeSolidsKgH, closeTo(75.81058, 1e-4));
+      expect(r.cakeWaterPercent, closeTo(82, 1e-9));
+      expect(r.cakeWaterKgH, closeTo(345.35933, 1e-4));
+    });
+
+    test('sentrat çıkışı: 6578,83 kg/h, 3,29 kg/h kuru katı, 6575,54 kg/h su', () {
+      final r = sheet();
+      expect(r.centrateMassKgH, closeTo(6578.83008, 1e-4));
+      expect(r.centrateSolidsKgH, closeTo(3.28942, 1e-4));
+      expect(r.centrateWaterPercent, closeTo(99.95, 1e-9));
+      expect(r.centrateWaterKgH, closeTo(6575.54067, 1e-4));
+      expect(r.centrateAkmMgL, closeTo(500, 1e-9));
+    });
+
+    test('toplam kütle ve katı kütlesi korunur', () {
+      final r = sheet();
+      expect(r.cakeMassKgH + r.centrateMassKgH, closeTo(r.feedMassKgH, 1e-9));
+      expect(
+        r.cakeSolidsKgH + r.centrateSolidsKgH,
+        closeTo(r.feedSolidsKgH, 1e-9),
+      );
+    });
+
+    test('yakalama verimi %95,58 (konsantrasyon bazlı), katı geri kazanımı %95,84', () {
+      final r = sheet();
+      expect(r.captureEfficiencyPercent, closeTo(95.57522, 1e-4));
+      expect(r.solidsRecoveryPercent, closeTo(95.84145, 1e-4));
+    });
+
+    test('polimer: 0,8 kg/h ve 10,11 kg/tKM', () {
+      final r = sheet();
+      expect(r.polymerKgH, closeTo(0.8, 1e-9));
+      expect(r.polymerKgPerTonDs, closeTo(10.11378, 1e-4));
+    });
+
+    test('günlük değerler: 168 m³, 10,11 ton kek, 157,89 m³ sentrat', () {
+      final r = sheet();
+      expect(r.dailyFeedM3, closeTo(168, 1e-9));
+      expect(r.dailyCakeTons, closeTo(10.10808, 1e-4));
+      expect(r.dailyCentrateM3, closeTo(157.89192, 1e-4));
+    });
+
+    test('farklı yoğunluk ve çalışma süresi', () {
+      final r = decanterMassBalance(
+        feedFlowM3h: 20,
+        feedDensityKgPerM3: 1030,
+        feedSolidsPercent: 3,
+        cakeSolidsPercent: 22,
+        centrateSolidsPercent: 0.2,
+        polymerConcentrationPercent: 0.2,
+        polymerSolutionLph: 500,
+        hoursPerDay: 20,
+      );
+      expect(r.feedMassKgH, closeTo(20600, 1e-9));
+      expect(r.cakeMassKgH, closeTo(2645.87156, 1e-4));
+      expect(r.centrateMassKgH, closeTo(17954.12844, 1e-4));
+      expect(r.captureEfficiencyPercent, closeTo(93.33333, 1e-4));
+      expect(r.polymerKgPerTonDs, closeTo(1.61812, 1e-4));
+      expect(r.dailyCakeTons, closeTo(52.91743, 1e-4));
+      expect(r.dailyFeedM3, closeTo(400, 1e-9));
+    });
+
+    test('kek katı oranı beslemeden büyük olmalı', () {
+      expect(
+        () => decanterMassBalance(
+          feedFlowM3h: 7,
+          feedDensityKgPerM3: 1000,
+          feedSolidsPercent: 5,
+          cakeSolidsPercent: 4,
+          centrateSolidsPercent: 0.05,
+          polymerConcentrationPercent: 0.1,
+          polymerSolutionLph: 800,
+        ),
+        throwsA(isA<CalculationException>()),
+      );
+    });
+
+    test('besleme katı oranı sentrattan büyük olmalı', () {
+      expect(
+        () => decanterMassBalance(
+          feedFlowM3h: 7,
+          feedDensityKgPerM3: 1000,
+          feedSolidsPercent: 0.04,
+          cakeSolidsPercent: 18,
+          centrateSolidsPercent: 0.05,
+          polymerConcentrationPercent: 0.1,
+          polymerSolutionLph: 800,
+        ),
+        throwsA(isA<CalculationException>()),
+      );
+    });
+
+    test('% orandan AKM (mg/L): 0,10 % = 1000 mg/L', () {
+      expect(percentToAkmMgL(0.10), closeTo(1000, 1e-9));
+      expect(percentToAkmMgL(1), closeTo(10000, 1e-9));
+      expect(
+        () => percentToAkmMgL(101),
         throwsA(isA<CalculationException>()),
       );
     });

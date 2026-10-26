@@ -1,38 +1,38 @@
 import 'validation.dart';
 
-/// Santrifüje giren kuru katı yükünün tahmini.
+/// Santrifüje giren kuru katı yükünün tahmini (SI birimleri).
 class ThroughputResult {
   const ThroughputResult({
-    required this.totalGallons,
-    required this.slurryMassLb,
-    required this.dryMassLb,
+    required this.totalVolumeM3,
+    required this.slurryMassKg,
+    required this.dryMassKg,
     required this.dryTonsPerDay,
   });
 
-  /// Çalışma süresince işlenen toplam hacim (ABD galonu).
-  final double totalGallons;
+  /// Çalışma süresince işlenen toplam hacim (m³).
+  final double totalVolumeM3;
 
-  /// Bulamaç kütlesi (lb).
-  final double slurryMassLb;
+  /// Bulamaç kütlesi (kg).
+  final double slurryMassKg;
 
-  /// Kuru katı kütlesi (lb).
-  final double dryMassLb;
+  /// Kuru katı kütlesi (kg).
+  final double dryMassKg;
 
-  /// Kuru katı, kısa ton/gün (1 ton = 2000 lb).
+  /// Kuru katı, ton/gün (1 ton = 1000 kg).
   final double dryTonsPerDay;
 }
 
-/// Kuru katı yükü: lb/saat = GPM × 60 × yoğunluk × katı oranı.
+/// Kuru katı yükü: kg/saat = debi (m³/h) × yoğunluk (kg/m³) × katı oranı.
 ///
 /// [solidsWeightPercent] ağırlıkça yüzde (hacimce değil), 0–100 aralığında.
 ThroughputResult dryTonsThroughput({
-  required double feedGpm,
-  required double slurryDensityLbPerGal,
+  required double feedM3h,
+  required double slurryDensityKgPerM3,
   required double solidsWeightPercent,
   required double hoursPerDay,
 }) {
-  requirePositive(feedGpm, 'Besleme debisi');
-  requirePositive(slurryDensityLbPerGal, 'Bulamaç yoğunluğu');
+  requirePositive(feedM3h, 'Besleme debisi');
+  requirePositive(slurryDensityKgPerM3, 'Bulamaç yoğunluğu');
   requirePositive(hoursPerDay, 'Günlük çalışma saati');
   if (hoursPerDay > 24) {
     throw const CalculationException('Günlük çalışma saati 24 saatten büyük olamaz.');
@@ -42,13 +42,13 @@ ThroughputResult dryTonsThroughput({
       solidsWeightPercent > 100) {
     throw const CalculationException('Katı oranı 0 ile 100 arasında olmalıdır.');
   }
-  final totalGallons = feedGpm * 60 * hoursPerDay;
-  final slurryMassLb = totalGallons * slurryDensityLbPerGal;
-  final dryMassLb = slurryMassLb * solidsWeightPercent / 100;
+  final totalVolumeM3 = feedM3h * hoursPerDay;
+  final slurryMassKg = totalVolumeM3 * slurryDensityKgPerM3;
+  final dryMassKg = slurryMassKg * solidsWeightPercent / 100;
   return ThroughputResult(
-    totalGallons: totalGallons,
-    slurryMassLb: slurryMassLb,
-    dryMassLb: dryMassLb,
-    dryTonsPerDay: dryMassLb / 2000,
+    totalVolumeM3: totalVolumeM3,
+    slurryMassKg: slurryMassKg,
+    dryMassKg: dryMassKg,
+    dryTonsPerDay: dryMassKg / 1000,
   );
 }

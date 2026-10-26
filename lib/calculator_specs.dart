@@ -276,14 +276,14 @@ final List<CalculatorSpec> calculatorSpecs = [
     icon: Icons.scale_outlined,
     numberFields: const [
       NumberFieldSpec(
-        key: 'gpm',
+        key: 'flow',
         label: 'Besleme debisi',
-        units: [UnitOption('GPM', 1)],
+        units: [UnitOption('m³/h', 1)],
       ),
       NumberFieldSpec(
         key: 'density',
         label: 'Bulamaç yoğunluğu',
-        units: [UnitOption('lb/gal', 1)],
+        units: [UnitOption('kg/m³', 1)],
       ),
       NumberFieldSpec(
         key: 'solids',
@@ -298,8 +298,8 @@ final List<CalculatorSpec> calculatorSpecs = [
     ],
     calculate: (n, c) {
       final r = dryTonsThroughput(
-        feedGpm: n['gpm']!,
-        slurryDensityLbPerGal: n['density']!,
+        feedM3h: n['flow']!,
+        slurryDensityKgPerM3: n['density']!,
         solidsWeightPercent: n['solids']!,
         hoursPerDay: n['hours']!,
       );
@@ -309,9 +309,9 @@ final List<CalculatorSpec> calculatorSpecs = [
           '${formatNumber(r.dryTonsPerDay, decimals: 2)} ton/gün',
           primary: true,
         ),
-        ResultItem('Toplam hacim', '${formatNumber(r.totalGallons, decimals: 0)} gal'),
-        ResultItem('Bulamaç kütlesi', '${formatNumber(r.slurryMassLb, decimals: 0)} lb'),
-        ResultItem('Kuru katı kütlesi', '${formatNumber(r.dryMassLb, decimals: 0)} lb'),
+        ResultItem('Toplam hacim', '${formatNumber(r.totalVolumeM3, decimals: 1)} m³'),
+        ResultItem('Bulamaç kütlesi', '${formatNumber(r.slurryMassKg, decimals: 0)} kg'),
+        ResultItem('Kuru katı kütlesi', '${formatNumber(r.dryMassKg, decimals: 0)} kg'),
         const ResultItem(
           'Not',
           'Yalnızca giren katı yükünü tahmin eder; geri kazanım, kek kuruluğu veya makine performansını öngörmez.',

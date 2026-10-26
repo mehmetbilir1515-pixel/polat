@@ -20,7 +20,10 @@ Bu dosya, bu depoda çalışan yapay zekâ asistanı için kuralları içerir.
 - `lib/calculators/`: saf hesaplama fonksiyonları (arayüzden bağımsız, test edilebilir). Geçersiz girdide `CalculationException` fırlatır.
 - `lib/models/calculator_spec.dart`: araç tanımı modelleri (girdi alanları, birimler, sonuçlar).
 - `lib/calculator_specs.dart`: 7 aracın arayüz tanımları. Yeni araç = yeni hesap fonksiyonu + yeni `CalculatorSpec` + test.
-- `lib/screens/`: ana ekran ve tanımdan otomatik üretilen hesaplama ekranı.
+- `lib/screens/`: ana ekran, tanımdan otomatik üretilen hesaplama ekranı ve özel `mass_balance_screen.dart` (dekantör kütle denkliği; anlık hesap, bölümlü sayfa).
+- `lib/calculators/mass_balance.dart`: dekantör kütle denkliği. C = F·(f − s)/(c − s). "Yakalama verimi" (besleme−sentrat)/besleme formülüyle verilir (kullanıcının hesap sayfasıyla uyumlu); kütle bazlı katı geri kazanımı ayrıca gösterilir.
+- `lib/calculators/decanter_3000g.dart` ve `lib/screens/decanter_3000g_screen.dart`: POLAT DECANTER 3000G kontrol ekranı. Model verisi ve kurallar kullanıcının HTML sayfasından alınmıştır (limit >= hedef devir ise geçer; Sb ≥ 1,5, Sf ≥ 1,3). Veri değişirse HTML'deki tablo kaynak alınır ve `test/decanter_3000g_test.dart` beklentileri HTML'in kendi koduyla yeniden üretilir.
+- Birimler: debi m³/h, yoğunluk kg/m³ (throughput ve kütle denkliği). ABD birimleri (GPM, lb/gal) yalnızca debi dönüştürücüde bulunur.
 - `lib/theme.dart`: renk teması. Ana renk RAL 5004 (siyah mavi), vurgu rengi RAL 1003 (sinyal sarısı).
 - `assets/icon/`: P harfi logosu (uygulama simgesi). CI, `flutter_launcher_icons` ile Android/iOS simgelerini üretir.
 - Terminoloji: arayüzde "kasa" yerine **"tambur"** yazılır (G-Force aracında "Tambur iç çapı").

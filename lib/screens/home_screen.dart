@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../calculator_specs.dart';
 import 'calculator_screen.dart';
 import 'decanter_3000g_screen.dart';
+import 'decanter_specs_screen.dart';
 import 'mass_balance_screen.dart';
 
 /// Ana ekran: dekantör ekranları ve tüm hesaplama araçlarının listesi.
@@ -51,6 +52,12 @@ class HomeScreen extends StatelessWidget {
         title: 'POLAT DECANTER 3000G',
         subtitle: 'Model seçin; rulman, şanzıman ve tambur dayanımını 3000G için kontrol edin.',
         screen: () => const Decanter3000gScreen(),
+      ),
+      (
+        icon: Icons.table_chart_outlined,
+        title: 'Dekantör Model Değerleri',
+        subtitle: 'Model seçin; maks. çalışma devri, gövde devri ve hidrolik kapasiteyi görün.',
+        screen: () => const DecanterSpecsScreen(),
       ),
     ];
 

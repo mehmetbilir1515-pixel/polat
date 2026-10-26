@@ -77,6 +77,25 @@ void main() {
     expect(find.textContaining('Yetersiz!'), findsNothing);
   });
 
+  testWidgets('Dekantör model değerleri: model seçince değerler görünür', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    await tester.tap(find.text('Dekantör Model Değerleri'));
+    await tester.pumpAndSettle();
+
+    // Model seçilmeden değer yok.
+    expect(find.text('Hidrolik Kapasite'), findsNothing);
+
+    await tester.tap(find.byType(DropdownButton<String>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('SX650').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('2.300'), findsOneWidget); // maks. çalışma devri
+    expect(find.text('2.500'), findsOneWidget); // maks. gövde devri
+    expect(find.text('70-100'), findsOneWidget); // hidrolik kapasite
+  });
+
   testWidgets('Kütle denkliği debi değişince güncellenir ve hatayı gösterir', (tester) async {
     await tester.pumpWidget(const PolatApp());
 

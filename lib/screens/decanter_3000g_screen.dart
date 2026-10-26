@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../calculators/decanter_3000g.dart';
 import '../format.dart';
-import '../theme.dart';
+import '../widgets/model_selector.dart';
 
 const Color _passGreen = Color(0xFF28A745);
 const Color _failRed = Color(0xFFDC3545);
@@ -25,54 +25,6 @@ class _Decanter3000gScreenState extends State<Decanter3000gScreen> {
     }
     final model = decanter3000gModels.firstWhere((m) => m.model == name);
     return analyze3000g(model);
-  }
-
-  Widget _selector() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: ral5004,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const Text(
-            'DEKANTÖR MODELİ SEÇİNİZ',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                isExpanded: true,
-                value: _selectedModel,
-                hint: const Text('-- Listeden Seçin --'),
-                style: const TextStyle(
-                  color: ral5004,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-                items: [
-                  for (final m in decanter3000gModels)
-                    DropdownMenuItem<String>(
-                      value: m.model,
-                      child: Text(m.model),
-                    ),
-                ],
-                onChanged: (value) => setState(() => _selectedModel = value),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   Widget _banner() {
@@ -271,7 +223,11 @@ class _Decanter3000gScreenState extends State<Decanter3000gScreen> {
                 style: theme.textTheme.bodySmall,
               ),
               const SizedBox(height: 20),
-              _selector(),
+              ModelSelector(
+                models: [for (final m in decanter3000gModels) m.model],
+                value: _selectedModel,
+                onChanged: (value) => setState(() => _selectedModel = value),
+              ),
               if (analysis != null) ..._results(analysis),
               const SizedBox(height: 32),
               Text(

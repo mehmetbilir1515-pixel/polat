@@ -28,14 +28,20 @@ jobs:
       # Depoda web/ klasörü yok; burada üretilir.
       - name: Web platform klasörünü üret
         run: |
-          flutter create --platforms=web --org com.polat --project-name polat_rd .
+          # Simge aracı pubspec'teki android/ios/web ayarlarının hepsini okur; üçünü de üret.
+          flutter create --platforms=android,ios,web --org com.polat --project-name polat_rd .
           # flutter create kendi örnek dosyalarını yazmış olabilir; bizimkileri geri yükle.
           git checkout -- lib test pubspec.yaml assets
 
       - run: flutter pub get
 
       - name: Web simgelerini üret
-        run: dart run flutter_launcher_icons
+        run: |
+          set -o pipefail
+          dart run flutter_launcher_icons 2>&1 | tee icons.log || {
+            echo "::error title=flutter_launcher_icons::$(tail -n 40 icons.log | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+            exit 1
+          }
 
       - name: Uygulama adı ve renkleri
         run: |

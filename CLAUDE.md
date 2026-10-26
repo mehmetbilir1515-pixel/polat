@@ -27,7 +27,8 @@ Bu dosya, bu depoda çalışan yapay zekâ asistanı için kuralları içerir.
 - `test/`: birim ve widget testleri.
 - `.github/workflows/android.yml`: testleri çalıştırır ve Android APK'yı bulutta derler.
 - `.github/workflows/ios.yml`: iOS sürümünü macOS'ta derler (imzasız .ipa).
-- `.github/workflows/pages.yml`: web sürümünü (PWA) GitHub Pages'e yayınlar; adres `https://mehmetbilir1515-pixel.github.io/polat/`. Şirket içi paylaşım için tercih edilen yoldur.
+- `.github/workflows/pages.yml`: GitHub Pages'e yayınlar. Kök sayfa `site/index.html` (telefona göre yönlendiren paylaşım sayfası), `/app/` Flutter web (iPhone için PWA), `/polat-rd.apk` Android APK. Adres `https://mehmetbilir1515-pixel.github.io/polat/`.
+- `site/index.html`: paylaşım sayfası. Alan adı ayarı kullanıcı tarafından yapılmadıkça şirket alan adına (polatas.com.tr) dokunma; hedef adres `rd.polatas.com.tr`, DNS kaydı BT tarafından eklenecek.
 
 ## Çalışma biçimi
 

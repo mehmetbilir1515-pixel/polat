@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1A1C2B">
+  <title>POLAT R&amp;D</title>
+  <meta name="description" content="POLAT R&amp;D santrifüj ve mekanik hesaplama araçları. Android ve iPhone için.">
+  <link rel="icon" href="icon.png">
+  <style>
+    :root {
+      --navy: #1A1C2B;
+      --yellow: #F9A800;
+      --paper: #FFFBF2;
+      --muted: #5A5D70;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--paper);
+      color: var(--navy);
+      line-height: 1.5;
+    }
+    header {
+      background: var(--navy);
+      color: var(--yellow);
+      padding: 40px 16px 32px;
+      text-align: center;
+    }
+    header img {
+      width: 96px; height: 96px;
+      border-radius: 22px;
+      display: block; margin: 0 auto 16px;
+    }
+    header h1 { margin: 0 0 6px; font-size: 1.8rem; }
+    header p { margin: 0; color: #E8E9F0; }
+    main { max-width: 560px; margin: 0 auto; padding: 24px 16px 48px; }
+    section {
+      background: #fff;
+      border: 1px solid #E6E1D2;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    section.suggested { border: 2px solid var(--yellow); }
+    h2 { margin: 0 0 4px; font-size: 1.15rem; }
+    .sub { margin: 0 0 14px; color: var(--muted); font-size: .95rem; }
+    .btn {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      background: var(--yellow);
+      color: var(--navy);
+      font-weight: 700;
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+    }
+    .btn:focus-visible { outline: 3px solid var(--navy); outline-offset: 2px; }
+    ol { margin: 0; padding-left: 20px; font-size: .95rem; }
+    ol li { margin-bottom: 6px; }
+    .note { font-size: .85rem; color: var(--muted); margin: 12px 0 0; }
+    .tools { margin: 24px 0 0; font-size: .95rem; }
+    .tools ul { margin: 6px 0 0; padding-left: 20px; color: var(--muted); }
+    footer { text-align: center; color: var(--muted); font-size: .8rem; padding: 0 16px 32px; }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="icon.png" alt="POLAT R&amp;D logosu">
+    <h1>POLAT R&amp;D</h1>
+    <p>Santrifüj ve mekanik hesaplama araçları</p>
+  </header>
+
+  <main>
+    <section id="android" data-os="android">
+      <h2>Android</h2>
+      <p class="sub">Uygulamayı APK dosyası olarak indirip kurabilirsiniz.</p>
+      <a class="btn" href="polat-rd.apk" download="POLAT-RD.apk">APK'yı indir</a>
+      <ol>
+        <li>İndirme bitince bildirimden veya <b>İndirilenler</b> klasöründen dosyaya dokunun.</li>
+        <li>Telefon bilinmeyen kaynaklardan kurulum izni isterse <b>Ayarlar</b>'a dokunup izni verin.</li>
+        <li><b>Yükle</b>'ye dokunun. Play Protect uyarırsa <b>Yine de yükle</b> seçin.</li>
+      </ol>
+      <p class="note">Uygulama Play Store'da yayında olmadığı için bu uyarılar normaldir.</p>
+    </section>
+
+    <section id="ios" data-os="ios">
+      <h2>iPhone / iPad</h2>
+      <p class="sub">Web uygulaması olarak açılır ve ana ekrana eklenir.</p>
+      <a class="btn" href="app/">Uygulamayı aç</a>
+      <ol>
+        <li>Bu sayfayı <b>Safari</b>'de açın.</li>
+        <li><b>Paylaş</b> düğmesine (kare ve yukarı ok) dokunun.</li>
+        <li><b>Ana Ekrana Ekle</b>'yi seçin, <b>Ekle</b>'ye dokunun.</li>
+      </ol>
+      <p class="note">Ana ekrandaki POLAT R&amp;D simgesi tam ekran bir uygulama gibi açılır.</p>
+    </section>
+
+    <div class="tools">
+      <strong>İçindeki hesaplama araçları</strong>
+      <ul>
+        <li>G-Force (RCF)</li>
+        <li>Diferansiyel hız</li>
+        <li>Debi dönüştürücü</li>
+        <li>Kasnak hızı ve kasnak boyutu</li>
+        <li>Kayış uzunluğu</li>
+        <li>Santrifüj throughput</li>
+      </ul>
+    </div>
+  </main>
+
+  <footer>Sonuçlar mühendislik tahminidir; uygulama öncesi üretici bilgileriyle doğrulayın.</footer>
+
+  <script>
+    (function () {
+      var ua = navigator.userAgent || '';
+      var isAndroid = /Android/i.test(ua);
+      var isIOS = /iPhone|iPad|iPod/i.test(ua) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      var os = isAndroid ? 'android' : (isIOS ? 'ios' : null);
+      if (!os) { return; }
+      var sections = document.querySelectorAll('section[data-os]');
+      var main = document.querySelector('main');
+      sections.forEach(function (s) {
+        if (s.getAttribute('data-os') === os) {
+          s.classList.add('suggested');
+          main.insertBefore(s, main.firstChild);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -40,17 +40,26 @@ polat/
 3. Sayfanın altındaki **Artifacts** bölümünden `polat-rd-android-apk` dosyasını indir.
 4. İndirilen ZIP'in içindeki `app-release.apk` dosyasını Android telefona kopyalayıp aç (bilinmeyen kaynaklardan kuruluma izin gerekebilir).
 
-## Web uygulaması (PWA) — iPhone ve Android için tek link
+## Paylaşım linki (Android APK + iPhone web uygulaması)
 
 Her güncellemede **Web (GitHub Pages)** iş akışı siteyi yeniden yayınlar:
 
 **https://mehmetbilir1515-pixel.github.io/polat/**
 
-Telefona kurmak için linki tarayıcıda aç:
-- **iPhone (Safari):** Paylaş düğmesi → **Ana Ekrana Ekle**.
-- **Android (Chrome):** ⋮ menüsü → **Ana ekrana ekle** (veya **Uygulamayı yükle**).
+Tek link, telefona göre davranır:
+- **Android:** sayfadaki **APK'yı indir** düğmesi `polat-rd.apk` dosyasını indirir.
+- **iPhone (Safari):** **Uygulamayı aç** web uygulamasını (`/app/`) açar; Paylaş → **Ana Ekrana Ekle**.
+- Bilgisayarda ikisi de görünür.
 
-Bir kerelik ayar: depoda **Settings → Pages → Source** bölümünü **GitHub Actions** olarak seç.
+Site yapısı: `site/index.html` (paylaşım sayfası), `/app/` (Flutter web), `/polat-rd.apk`.
+
+Bir kerelik ayar: depoda **Settings → Pages → Source** bölümü **GitHub Actions** olmalı (yapıldı).
+
+### Şirket alan adına taşıma (ileride)
+
+`rd.polatas.com.tr` gibi bir adres için alan adının DNS panelinde bir `CNAME` kaydı (`rd` → `mehmetbilir1515-pixel.github.io`) eklenmeli; ardından GitHub **Settings → Pages → Custom domain** alanına adres yazılır ve `pages.yml` içindeki `BASE_HREF` değeri `/app/` yapılır. Kayıt eklenmeden adres çalışmaz.
+
+> Android APK'sı her derlemede yeni bir test anahtarıyla imzalanır. Telefonda eski sürüm varsa, yeni APK'yı kurmadan önce eskisini silmek gerekebilir. Kalıcı imza anahtarı eklenince bu sorun kalkar.
 
 ## Geliştirme (kendi bilgisayarında)
 

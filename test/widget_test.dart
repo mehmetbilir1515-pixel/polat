@@ -96,6 +96,52 @@ void main() {
     expect(find.text('70-100'), findsOneWidget); // hidrolik kapasite
   });
 
+  testWidgets('Kütle denkliği: hata bandı açılıp kapanırken yazılan kutu odağını korur', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    await tester.tap(find.text('Dekantör Kütle Denkliği'));
+    await tester.pumpAndSettle();
+
+    final cakeField = find.byKey(const ValueKey('field-cakeSolids'));
+    final cakeEditable = find.descendant(
+      of: cakeField,
+      matching: find.byType(EditableText),
+    );
+    bool hasFocus() => tester.widget<EditableText>(cakeEditable).focusNode.hasFocus;
+    String cakeText() => tester.widget<TextField>(cakeField).controller!.text;
+
+    await tester.tap(cakeField);
+    await tester.pump();
+    expect(hasFocus(), isTrue);
+
+    // Kek oranı beslemeden küçük -> hata bandı açılır, bütün sayfa aşağı kayar.
+    await tester.enterText(cakeField, '1');
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Kek kuru katı oranı'), findsOneWidget);
+    expect(hasFocus(), isTrue);
+    expect(cakeText(), '1');
+
+    // Geçerli değere dönünce hata bandı kapanır; odak ve metin yine yerinde.
+    await tester.enterText(cakeField, '18');
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Kek kuru katı oranı'), findsNothing);
+    expect(hasFocus(), isTrue);
+    expect(cakeText(), '18');
+    expect(find.text('421,17 kg/h'), findsOneWidget);
+  });
+
+  testWidgets('Kütle denkliği: yalnızca rakam, virgül ve nokta girilebilir', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    await tester.tap(find.text('Dekantör Kütle Denkliği'));
+    await tester.pumpAndSettle();
+
+    final flowField = find.byKey(const ValueKey('field-flow'));
+    await tester.enterText(flowField, '1a2,5x');
+    await tester.pump();
+    expect(tester.widget<TextField>(flowField).controller!.text, '12,5');
+  });
+
   testWidgets('Kütle denkliği debi değişince güncellenir ve hatayı gösterir', (tester) async {
     await tester.pumpWidget(const PolatApp());
 

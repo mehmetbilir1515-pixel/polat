@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../calculators/mass_balance.dart';
 import '../calculators/validation.dart';
@@ -125,6 +126,7 @@ class _MassBalanceScreenState extends State<MassBalanceScreen> {
 
   Widget _section(String title, List<Widget> children) {
     return Card(
+      key: ValueKey('section-$title'),
       clipBehavior: Clip.antiAlias,
       margin: const EdgeInsets.only(bottom: 16),
       child: Column(
@@ -154,20 +156,51 @@ class _MassBalanceScreenState extends State<MassBalanceScreen> {
     );
   }
 
+  /// Tek bir sayı kutusu. Sabit [ValueKey] sayesinde, sayfa düzeni değişse bile
+  /// (ör. hata bandı açılıp kapansa) odak ve imleç aynı kutuda kalır.
+  Widget _field(String key, String label, String unit) {
+    return TextField(
+      key: ValueKey('field-$key'),
+      controller: _c[key],
+      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      textInputAction: TextInputAction.next,
+      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]'))],
+      decoration: InputDecoration(
+        labelText: label,
+        suffixText: unit,
+        filled: true,
+        fillColor: _inputFill,
+        border: const OutlineInputBorder(),
+      ),
+      onChanged: (_) => setState(_compute),
+    );
+  }
+
   Widget _input(String key, String label, String unit) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: TextField(
-        controller: _c[key],
-        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        decoration: InputDecoration(
-          labelText: label,
-          suffixText: unit,
-          filled: true,
-          fillColor: _inputFill,
-          border: const OutlineInputBorder(),
-        ),
-        onChanged: (_) => setState(_compute),
+      child: _field(key, label, unit),
+    );
+  }
+
+  /// İki kutuyu yan yana koyar (ekranı sıkılaştırır).
+  Widget _inputPair(
+    String key1,
+    String label1,
+    String unit1,
+    String key2,
+    String label2,
+    String unit2,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(child: _field(key1, label1, unit1)),
+          const SizedBox(width: 12),
+          Expanded(child: _field(key2, label2, unit2)),
+        ],
       ),
     );
   }
@@ -210,21 +243,28 @@ class _MassBalanceScreenState extends State<MassBalanceScreen> {
                 style: theme.textTheme.bodyMedium,
               ),
               const SizedBox(height: 16),
-              if (_error != null)
-                Card(
-                  color: theme.colorScheme.errorContainer,
-                  margin: const EdgeInsets.only(bottom: 16),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Text(
-                      _error!,
-                      style: TextStyle(color: theme.colorScheme.onErrorContainer),
-                    ),
-                  ),
-                ),
+              // Hata bandı her zaman listede yer alır (boşken sıfır yükseklikte);
+              // böylece altındaki kutuların sırası ve durumu değişmez.
+              AnimatedSize(
+                key: const ValueKey('error-slot'),
+                duration: const Duration(milliseconds: 150),
+                alignment: Alignment.topCenter,
+                child: _error == null
+                    ? const SizedBox(width: double.infinity)
+                    : Card(
+                        color: theme.colorScheme.errorContainer,
+                        margin: const EdgeInsets.only(bottom: 16),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Text(
+                            _error!,
+                            style: TextStyle(color: theme.colorScheme.onErrorContainer),
+                          ),
+                        ),
+                      ),
+              ),
               _section('DEKANTÖR GİRİŞ', [
-                _input('flow', 'Ürün debisi', 'm³/h'),
-                _input('density', 'Ürün yoğunluğu', 'kg/m³'),
+                _inputPair('flow', 'Ürün debisi', 'm³/h', 'density', 'Yoğunluk', 'kg/m³'),
                 _input('feedSolids', 'Kuru katı madde', '% w/w'),
                 const Divider(),
                 _output('Ürün debisi', _fmt(r?.feedMassKgH, 'kg/h')),
@@ -233,8 +273,7 @@ class _MassBalanceScreenState extends State<MassBalanceScreen> {
                 _output('Nem içeriği', _fmt(r?.feedWaterKgH, 'kg/h')),
               ]),
               _section('POLİMER (POLİELEKTROLİT) DOZAJLAMA', [
-                _input('polymerPct', 'Hazırlama oranı (yoğunluk)', '%'),
-                _input('polymerLph', 'Çözelti debisi', 'L/h'),
+                _inputPair('polymerPct', 'Hazırlama oranı', '%', 'polymerLph', 'Çözelti debisi', 'L/h'),
                 const Divider(),
                 _output('Polimer debisi', _fmt(r?.polymerKgH, 'kg/h')),
                 _output(

@@ -27,3 +27,8 @@ flutter_launcher_icons:
   remove_alpha_ios: true
   adaptive_icon_background: "#FAB802"
   adaptive_icon_foreground: assets/icon/icon_foreground.png
+  web:
+    generate: true
+    image_path: assets/icon/icon.png
+    background_color: "#FAB802"
+    theme_color: "#1A1C2B"

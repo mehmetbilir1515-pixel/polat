@@ -26,6 +26,8 @@ Bu dosya, bu depoda çalışan yapay zekâ asistanı için kuralları içerir.
 - Terminoloji: arayüzde "kasa" yerine **"tambur"** yazılır (G-Force aracında "Tambur iç çapı").
 - `test/`: birim ve widget testleri.
 - `.github/workflows/android.yml`: testleri çalıştırır ve Android APK'yı bulutta derler.
+- `.github/workflows/ios.yml`: iOS sürümünü macOS'ta derler (imzasız .ipa).
+- `.github/workflows/pages.yml`: web sürümünü (PWA) GitHub Pages'e yayınlar; adres `https://mehmetbilir1515-pixel.github.io/polat/`. Şirket içi paylaşım için tercih edilen yoldur.
 
 ## Çalışma biçimi
 

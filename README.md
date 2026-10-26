@@ -40,6 +40,18 @@ polat/
 3. Sayfanın altındaki **Artifacts** bölümünden `polat-rd-android-apk` dosyasını indir.
 4. İndirilen ZIP'in içindeki `app-release.apk` dosyasını Android telefona kopyalayıp aç (bilinmeyen kaynaklardan kuruluma izin gerekebilir).
 
+## Web uygulaması (PWA) — iPhone ve Android için tek link
+
+Her güncellemede **Web (GitHub Pages)** iş akışı siteyi yeniden yayınlar:
+
+**https://mehmetbilir1515-pixel.github.io/polat/**
+
+Telefona kurmak için linki tarayıcıda aç:
+- **iPhone (Safari):** Paylaş düğmesi → **Ana Ekrana Ekle**.
+- **Android (Chrome):** ⋮ menüsü → **Ana ekrana ekle** (veya **Uygulamayı yükle**).
+
+Bir kerelik ayar: depoda **Settings → Pages → Source** bölümünü **GitHub Actions** olarak seç.
+
 ## Geliştirme (kendi bilgisayarında)
 
 [Flutter SDK](https://docs.flutter.dev/get-started/install/windows) kurulu olmalı.

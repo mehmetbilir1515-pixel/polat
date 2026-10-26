@@ -1,0 +1,75 @@
+name: Web (GitHub Pages)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      # Depoda web/ klasörü yok; burada üretilir.
+      - name: Web platform klasörünü üret
+        run: |
+          flutter create --platforms=web --org com.polat --project-name polat_rd .
+          # flutter create kendi örnek dosyalarını yazmış olabilir; bizimkileri geri yükle.
+          git checkout -- lib test pubspec.yaml assets
+
+      - run: flutter pub get
+
+      - name: Web simgelerini üret
+        run: dart run flutter_launcher_icons
+
+      - name: Uygulama adı ve renkleri
+        run: |
+          sed -i 's|<title>[^<]*</title>|<title>POLAT R\&amp;D</title>|' web/index.html
+          sed -i 's|name="apple-mobile-web-app-title" content="[^"]*"|name="apple-mobile-web-app-title" content="POLAT R\&amp;D"|' web/index.html
+          sed -i 's|name="description" content="[^"]*"|name="description" content="POLAT R\&amp;D hesaplama araçları"|' web/index.html
+          python3 - <<'EOF'
+          import json
+          p = 'web/manifest.json'
+          m = json.load(open(p, encoding='utf-8'))
+          m['name'] = 'POLAT R&D'
+          m['short_name'] = 'POLAT R&D'
+          m['description'] = 'POLAT R&D hesaplama araçları'
+          m['background_color'] = '#FAB802'
+          m['theme_color'] = '#1A1C2B'
+          json.dump(m, open(p, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
+          EOF
+
+      - name: Testler
+        run: flutter test
+
+      - name: Web derle
+        run: flutter build web --release --base-href "/polat/"
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

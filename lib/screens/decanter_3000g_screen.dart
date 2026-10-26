@@ -117,7 +117,7 @@ class _Decanter3000gScreenState extends State<Decanter3000gScreen> {
         child: Column(
           children: [
             Text(
-              label.toUpperCase(),
+              label,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 11,
@@ -215,25 +215,29 @@ class _Decanter3000gScreenState extends State<Decanter3000gScreen> {
     return [
       if (a.meets3000gAlready) _banner(),
       const SizedBox(height: 20),
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            child: _infoCard(
-              'Maks. Çalışma Devri',
-              formatNumber(a.maxRpm.toDouble(), decimals: 0),
-              'rpm',
+      // Kaydırılabilir sayfada yükseklik sınırsız olduğundan, kartları eşit
+      // yükseklikte tutmak için IntrinsicHeight gerekir.
+      IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: _infoCard(
+                'Maks. Çalışma Devri',
+                formatNumber(a.maxRpm.toDouble(), decimals: 0),
+                'rpm',
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: _infoCard(
-              a.dynamicLabel,
-              formatNumber(a.dynamicValue.toDouble(), decimals: 0),
-              a.dynamicUnit,
+            const SizedBox(width: 12),
+            Expanded(
+              child: _infoCard(
+                a.dynamicLabel,
+                formatNumber(a.dynamicValue.toDouble(), decimals: 0),
+                a.dynamicUnit,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       const SizedBox(height: 20),
       for (final check in a.checks) _checkCard(check),

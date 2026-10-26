@@ -110,6 +110,9 @@ void main() {
     bool hasFocus() => tester.widget<EditableText>(cakeEditable).focusNode.hasFocus;
     String cakeText() => tester.widget<TextField>(cakeField).controller!.text;
 
+    // Kutu sanal ekranın dışında kalabilir; dokunmadan önce görünür alana kaydır.
+    await tester.ensureVisible(cakeField);
+    await tester.pumpAndSettle();
     await tester.tap(cakeField);
     await tester.pump();
     expect(hasFocus(), isTrue);

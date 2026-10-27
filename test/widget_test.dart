@@ -172,10 +172,16 @@ void main() {
 
     // S200: ana motor saat yönü tersi, helezon motoru saat yönü.
     expect(find.text('2 kayıt'), findsOneWidget);
-    expect(find.text('Motor: Ana Motor'), findsOneWidget);
+    // Liste tembel kurulur; ikinci kart ekran dışında olabilir, önce kaydır.
+    await tester.scrollUntilVisible(
+      find.text('Motor: Helezon Motoru'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Motor: Ana Motor', skipOffstage: false), findsOneWidget);
     expect(find.text('Motor: Helezon Motoru'), findsOneWidget);
-    expect(find.text('SAAT YÖNÜ TERSİ'), findsOneWidget);
-    expect(find.text('SAAT YÖNÜ'), findsOneWidget);
+    expect(find.text('SAAT YÖNÜ TERSİ', skipOffstage: false), findsOneWidget);
+    expect(find.text('SAAT YÖNÜ', skipOffstage: false), findsOneWidget);
   });
 
   testWidgets('DEKANTÖR MOTOR DÖNÜŞ YÖNÜ: kayıt yoksa uyarı, temizleyince tümü', (tester) async {

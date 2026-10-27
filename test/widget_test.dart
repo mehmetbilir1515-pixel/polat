@@ -212,28 +212,6 @@ void main() {
     expect(find.textContaining('kayıt bulunamadı'), findsNothing);
   });
 
-  testWidgets('DEKANTÖR MOTOR DÖNÜŞ YÖNÜ: CYCLO (ZS) seçimi birleşik şanzımanları da getirir', (tester) async {
-    await tester.pumpWidget(const PolatApp());
-
-    await tester.tap(find.text('DEKANTÖR MOTOR DÖNÜŞ YÖNÜ'));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.byKey(const ValueKey('filter-model')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('SX650').last);
-    await tester.pumpAndSettle();
-
-    // SX650: CYCLO (ZS)-PLANET (ZSPV) iki kayıt (ana + helezon); CYCLO (ZS) seçimiyle de görünür.
-    await tester.tap(find.byKey(const ValueKey('filter-gearbox')));
-    await tester.pumpAndSettle();
-    // Birleşik yazımlar ayrı seçenek olarak listelenmez.
-    expect(find.text('CYCLO (ZS) - PLANET (ZSPV)'), findsNothing);
-    await tester.tap(find.text('CYCLO (ZS)').last);
-    await tester.pumpAndSettle();
-    expect(find.text('2 kayıt'), findsOneWidget);
-    expect(find.text('Şanzıman: CYCLO (ZS) - PLANET (ZSPV)'), findsWidgets);
-  });
-
   testWidgets('Kütle denkliği: hata bandı açılıp kapanırken yazılan kutu odağını korur', (tester) async {
     await tester.pumpWidget(const PolatApp());
 

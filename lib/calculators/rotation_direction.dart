@@ -24,19 +24,7 @@ class RotationEntry {
 
   /// Açıklama / özel durum; yoksa boş.
   final String note;
-
-  /// Şanzıman bileşenleri. HTML'de birleşik şanzımanlar aynı anlama gelen farklı
-  /// yazımlarla geçer ("CYCLO (ZS)- PLANET (ZSPV)" / "CYCLO (ZS)-PLANET (ZSPV)");
-  /// '-' ile ayrılıp boşluklar atılarak tek biçime indirilir.
-  List<String> get gearboxParts => gearboxComponents(gearbox);
-
-  /// Ekranda gösterilen tek biçimli şanzıman adı (ör. "CYCLO (ZS) - PLANET (ZSPV)").
-  String get gearboxLabel => gearboxParts.join(' - ');
 }
-
-/// "CYCLO (ZS)-PLANET (ZSPV)" -> ["CYCLO (ZS)", "PLANET (ZSPV)"].
-List<String> gearboxComponents(String gearbox) =>
-    [for (final p in gearbox.split('-')) p.trim()];
 
 const mainMotor = 'Ana Motor';
 const scrollMotor = 'Helezon Motoru';
@@ -46,18 +34,16 @@ const motorTypes = <String>[mainMotor, scrollMotor];
 List<String> get rotationModels =>
     (rotationEntries.map((e) => e.model).toSet().toList()..sort());
 
-/// Süzgeçte sunulan şanzıman bileşenleri (benzersiz, sıralı). Birleşik şanzımanlar
-/// her bileşeninin altında da bulunur: "CYCLO (ZS)" seçimi "CYCLO (ZS)-PLANET (ZSPV)"
-/// ve "CYCLO (ZS)-DESCH ZG" kayıtlarını da getirir.
+/// Listede bulunan benzersiz şanzıman tipleri (HTML'deki gibi sıralı).
 List<String> get rotationGearboxes =>
-    (rotationEntries.expand((e) => e.gearboxParts).toSet().toList()..sort());
+    (rotationEntries.map((e) => e.gearbox).toSet().toList()..sort());
 
 /// Verilen ölçütlere uyan kayıtlar. `null` = "Tümü".
 List<RotationEntry> filterRotation({String? model, String? gearbox, String? motor}) {
   return [
     for (final e in rotationEntries)
       if ((model == null || e.model == model) &&
-          (gearbox == null || e.gearboxParts.contains(gearbox)) &&
+          (gearbox == null || e.gearbox == gearbox) &&
           (motor == null || e.motor == motor))
         e,
   ];

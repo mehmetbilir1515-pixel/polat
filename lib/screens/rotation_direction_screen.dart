@@ -151,7 +151,7 @@ class _RotationDirectionScreenState extends State<RotationDirectionScreen> {
           children: [
             Text(e.model, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
             const SizedBox(height: 4),
-            Text('Şanzıman: ${e.gearboxLabel}'),
+            Text('Şanzıman: ${e.gearbox}'),
             const SizedBox(height: 2),
             Text('Motor: ${e.motor}', style: const TextStyle(fontWeight: FontWeight.w600)),
             const SizedBox(height: 10),

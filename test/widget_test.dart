@@ -158,6 +158,54 @@ void main() {
     expect(find.text('PX20 Yağlama Bilgisi'), findsNothing);
   });
 
+  testWidgets('DEKANTÖR MOTOR DÖNÜŞ YÖNÜ: model süzgeci ve yön rozetleri', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    await tester.tap(find.text('DEKANTÖR MOTOR DÖNÜŞ YÖNÜ'));
+    await tester.pumpAndSettle();
+    expect(find.text('40 kayıt'), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('filter-model')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('S200').last);
+    await tester.pumpAndSettle();
+
+    // S200: ana motor saat yönü tersi, helezon motoru saat yönü.
+    expect(find.text('2 kayıt'), findsOneWidget);
+    expect(find.text('Motor: Ana Motor'), findsOneWidget);
+    expect(find.text('Motor: Helezon Motoru'), findsOneWidget);
+    expect(find.text('SAAT YÖNÜ TERSİ'), findsOneWidget);
+    expect(find.text('SAAT YÖNÜ'), findsOneWidget);
+  });
+
+  testWidgets('DEKANTÖR MOTOR DÖNÜŞ YÖNÜ: kayıt yoksa uyarı, temizleyince tümü', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    await tester.tap(find.text('DEKANTÖR MOTOR DÖNÜŞ YÖNÜ'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('filter-model')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('S200').last);
+    await tester.pumpAndSettle();
+
+    // S200 için yalnızca CYCLO (ZS) vardır; PLANET (ZSPN) ile kayıt çıkmaz.
+    await tester.tap(find.byKey(const ValueKey('filter-gearbox')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('PLANET (ZSPN)').last);
+    await tester.pumpAndSettle();
+    expect(find.text('0 kayıt'), findsOneWidget);
+    expect(find.textContaining('kayıt bulunamadı'), findsOneWidget);
+
+    final reset = find.byKey(const ValueKey('reset-filters'));
+    await tester.ensureVisible(reset);
+    await tester.pumpAndSettle();
+    await tester.tap(reset);
+    await tester.pumpAndSettle();
+    expect(find.text('40 kayıt'), findsOneWidget);
+    expect(find.textContaining('kayıt bulunamadı'), findsNothing);
+  });
+
   testWidgets('Kütle denkliği: hata bandı açılıp kapanırken yazılan kutu odağını korur', (tester) async {
     await tester.pumpWidget(const PolatApp());
 

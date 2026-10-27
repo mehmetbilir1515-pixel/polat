@@ -6,6 +6,7 @@ import 'calculator_screen.dart';
 import 'decanter_3000g_screen.dart';
 import 'decanter_specs_screen.dart';
 import 'mass_balance_screen.dart';
+import 'rotation_direction_screen.dart';
 
 /// Ana ekran: dekantör ekranları ve tüm hesaplama araçlarının listesi.
 class HomeScreen extends StatelessWidget {
@@ -65,6 +66,12 @@ class HomeScreen extends StatelessWidget {
         title: 'DEKANTÖR YAĞLAMA BİLGİSİ',
         subtitle: 'Main Bearing / Helezon Rulmanı; endüstriyel veya zeytinyağı dekantörü ve modele göre yağlama bilgisi.',
         screen: () => const BearingLubricationScreen(),
+      ),
+      (
+        icon: Icons.rotate_right,
+        title: 'DEKANTÖR MOTOR DÖNÜŞ YÖNÜ',
+        subtitle: 'Model, şanzıman ve motor tipine göre ana / helezon motoru dönüş yönü.',
+        screen: () => const RotationDirectionScreen(),
       ),
     ];
 

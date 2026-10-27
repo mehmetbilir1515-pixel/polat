@@ -96,6 +96,68 @@ void main() {
     expect(find.text('70-100'), findsOneWidget); // hidrolik kapasite
   });
 
+  testWidgets('DEKANTÖR YAĞLAMA BİLGİSİ: Main/Helezon seçimi ve endüstriyel model', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    await tester.tap(find.text('DEKANTÖR YAĞLAMA BİLGİSİ'));
+    await tester.pumpAndSettle();
+    expect(find.text('Main Bearing'), findsOneWidget);
+    expect(find.text('Helezon Rulmanı'), findsOneWidget);
+
+    // Main Bearing verisi henüz eklenmedi.
+    await tester.tap(find.text('Main Bearing'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('henüz eklenmedi'), findsOneWidget);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    // Helezon Rulmanı -> Endüstriyel -> S200
+    await tester.tap(find.text('Helezon Rulmanı'));
+    await tester.pumpAndSettle();
+    expect(find.text('Endüstriyel'), findsOneWidget);
+    expect(find.text('Zeytinyağı'), findsOneWidget);
+
+    await tester.tap(find.byType(DropdownButton<String>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('S200').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('S200 Yağlama Bilgisi'), findsOneWidget);
+    expect(find.text('Arka Rulman: 13,59 g - 9 defa basım'), findsOneWidget);
+    expect(find.text('Ön Rulman: 6,82 g - 4 defa basım'), findsOneWidget);
+    expect(find.text('Her iki rulman toplam yağ miktarı: 20,41 g'), findsOneWidget);
+    expect(find.text('3210-A/C3'), findsOneWidget);
+    expect(find.text("SKF'te Ara"), findsNWidgets(2));
+  });
+
+  testWidgets('DEKANTÖR YAĞLAMA BİLGİSİ: Zeytinyağı sekmesi ve model', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    await tester.tap(find.text('DEKANTÖR YAĞLAMA BİLGİSİ'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Helezon Rulmanı'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Zeytinyağı'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(DropdownButton<String>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('PX20').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('PX20 Yağlama Bilgisi'), findsOneWidget);
+    expect(find.text('Re-Greasing Miktarı (g)'), findsOneWidget);
+    expect(find.text('41,92'), findsOneWidget);
+    expect(find.text('3218 A'), findsOneWidget);
+    expect(find.text('52,4'), findsOneWidget);
+    expect(find.text("SKF'te Ara"), findsOneWidget);
+
+    // Endüstriyel sekmesine dönünce seçim sıfırlanır.
+    await tester.tap(find.text('Endüstriyel'));
+    await tester.pumpAndSettle();
+    expect(find.text('PX20 Yağlama Bilgisi'), findsNothing);
+  });
+
   testWidgets('Kütle denkliği: hata bandı açılıp kapanırken yazılan kutu odağını korur', (tester) async {
     await tester.pumpWidget(const PolatApp());
 

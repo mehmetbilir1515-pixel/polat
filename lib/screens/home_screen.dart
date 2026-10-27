@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../calculator_specs.dart';
+import 'bearing_lubrication_screen.dart';
 import 'calculator_screen.dart';
 import 'decanter_3000g_screen.dart';
 import 'decanter_specs_screen.dart';
@@ -58,6 +59,12 @@ class HomeScreen extends StatelessWidget {
         title: 'Dekantör Model Değerleri',
         subtitle: 'Model seçin; maks. çalışma devri, gövde devri ve hidrolik kapasiteyi görün.',
         screen: () => const DecanterSpecsScreen(),
+      ),
+      (
+        icon: Icons.settings_input_component_outlined,
+        title: 'DEKANTÖR YAĞLAMA BİLGİSİ',
+        subtitle: 'Main Bearing / Helezon Rulmanı; endüstriyel veya zeytinyağı dekantörü ve modele göre yağlama bilgisi.',
+        screen: () => const BearingLubricationScreen(),
       ),
     ];
 

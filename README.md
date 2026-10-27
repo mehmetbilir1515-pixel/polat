@@ -6,6 +6,8 @@ Android ve iOS için mobil hesaplama araçları uygulaması (Flutter).
 
 **POLAT DECANTER 3000G** (ana ekranda ikinci sırada): dekantör modelini (S200 … SX920) seçince, 3000G için gereken devre göre arka rulman, şanzıman limitleri ve tambur dayanımı (Sb/Sf) kontrol edilir; her kart geçti/kaldı olarak gösterilir. S200, S300 ve S350 zaten 3000G'yi sağlar.
 
+**DEKANTÖR YAĞLAMA BİLGİSİ** (ana ekranda dördüncü sırada): önce **Main Bearing** veya **Helezon Rulmanı** seçilir. Helezon Rulmanı'nda **Endüstriyel** ya da **Zeytinyağı** dekantörü, ardından model seçilir; yağ miktarı (g), basım sayısı, rulman tipi/kodu ve ölçüleri gösterilir, "SKF'te Ara" düğmesi SKF sitesinde rulman tipini arar. Main Bearing verisi henüz eklenmedi.
+
 **Dekantör Model Değerleri** (ana ekranda üçüncü sırada): modeli seçince maksimum çalışma devri, maksimum gövde devri ve hidrolik kapasite (m³/h) görünür. Modeller: S200, S300, S350, S430, S470, S530, S570, SX650, S670.
 
 **Dekantör Kütle Denkliği** (ana ekranda ilk sırada): ürün debisi (m³/h), yoğunluk (kg/m³) ve besleme/kek/sentrat kuru katı oranlarından kek ve sentrat kütle akışlarını, polimer tüketimini (kg/tDS), yakalama verimini, günlük değerleri ve % → AKM (mg/L) dönüşümünü hesaplar. Değerler yazıldıkça sonuçlar anında güncellenir.

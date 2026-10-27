@@ -33,3 +33,17 @@ double? parseNumber(String input) {
   }
   return double.tryParse(text);
 }
+
+/// Sayıyı gereksiz sıfırlar olmadan Türkçe biçimde yazar (ör. 13,59 · 30 · 20,075).
+/// Binlik ayırıcı kullanmaz; yağ miktarı ve ölçü değerleri için uygundur.
+String formatCompact(double value, {int maxDecimals = 3}) {
+  if (!value.isFinite) {
+    return '—';
+  }
+  var text = value.toStringAsFixed(maxDecimals);
+  if (text.contains('.')) {
+    text = text.replaceFirst(RegExp(r'0+$'), '');
+    text = text.replaceFirst(RegExp(r'\.$'), '');
+  }
+  return text.replaceAll('.', ',');
+}

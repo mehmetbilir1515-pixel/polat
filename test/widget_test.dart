@@ -96,6 +96,43 @@ void main() {
     expect(find.text('70-100'), findsOneWidget); // hidrolik kapasite
   });
 
+  testWidgets('Dekantör model değerleri: S470 için 10° ve 15° çapları birlikte görünür', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    await tester.tap(find.text('Dekantör Model Değerleri'));
+    await tester.pumpAndSettle();
+    expect(find.text('Katı Çıkış Çapı'), findsNothing);
+
+    await tester.tap(find.byType(DropdownButton<String>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('S470').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Katı Çıkış Çapı'), findsOneWidget);
+    expect(find.text('Helezon Boru Çapı'), findsOneWidget);
+    expect(find.text('10°'), findsNWidgets(2));
+    expect(find.text('15°'), findsNWidgets(2));
+    expect(find.text('277,6'), findsOneWidget); // 10° katı çıkış
+    expect(find.text('225,6'), findsOneWidget); // 15° katı çıkış
+    expect(find.text('238'), findsOneWidget); // 10° helezon boru
+    expect(find.text('230'), findsOneWidget); // 15° helezon boru
+  });
+
+  testWidgets('Dekantör model değerleri: tek yapılı modelde (S200) açı etiketi yok', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    await tester.tap(find.text('Dekantör Model Değerleri'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(DropdownButton<String>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('S200').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('117,8'), findsOneWidget);
+    expect(find.text('112'), findsOneWidget);
+    expect(find.textContaining('°'), findsNothing);
+  });
+
   testWidgets('DEKANTÖR YAĞLAMA BİLGİSİ: Main/Helezon seçimi ve endüstriyel model', (tester) async {
     await tester.pumpWidget(const PolatApp());
 

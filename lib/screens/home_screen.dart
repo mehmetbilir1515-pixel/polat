@@ -58,7 +58,7 @@ class HomeScreen extends StatelessWidget {
       (
         icon: Icons.table_chart_outlined,
         title: 'Dekantör Model Değerleri',
-        subtitle: 'Model seçin; maks. çalışma devri, gövde devri ve hidrolik kapasiteyi görün.',
+        subtitle: 'Model seçin; devirler, hidrolik kapasite, katı çıkış çapı ve helezon boru çapını görün.',
         screen: () => const DecanterSpecsScreen(),
       ),
       (

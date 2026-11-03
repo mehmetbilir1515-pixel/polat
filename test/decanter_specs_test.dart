@@ -39,4 +39,61 @@ void main() {
       expect(other.maxRpm, s.maxOperatingRpm, reason: s.model);
     }
   });
+
+  // Kullanıcının gönderdiği çap tablosu, olduğu gibi (sekmeli, virgüllü); Dart verisinden bağımsız ayrıştırılır.
+  const diameterTable = '''
+S200\t117,8\t112
+S300\t175,5\t150
+S350\t211\t198
+S430\t262\t228
+S470 10°\t277,6\t238
+S470 15°\t225,6\t230
+S530 10°\t302\t285
+S530 15°\t254,5\t244
+S570 10°\t327,6\t320
+S570 15°\t273,6\t244
+SX650 10°\t360\t300
+SX650 15°\t302\t300
+S670 10°\t402\t353
+''';
+
+  test('katı çıkış ve helezon boru çapları kullanıcı tablosuyla aynıdır', () {
+    final rows = diameterTable.trim().split('\n').map((line) {
+      final parts = line.split('\t');
+      final m = RegExp(r'^(\S+?)(?: (\d+)°)?$').firstMatch(parts[0])!;
+      return (
+        model: m.group(1)!,
+        angle: m.group(2) == null ? null : int.parse(m.group(2)!),
+        solids: double.parse(parts[1].replaceAll(',', '.')),
+        scroll: double.parse(parts[2].replaceAll(',', '.')),
+      );
+    }).toList();
+    expect(rows.length, 13);
+
+    // Tablodaki her satır tam bir kez, doğru değerlerle bulunur; fazladan kayıt yoktur.
+    var matched = 0;
+    for (final s in decanterSpecs) {
+      for (final d in s.diameters) {
+        final hits = rows.where((r) => r.model == s.model && r.angle == d.angleDeg).toList();
+        expect(hits.length, 1, reason: '${s.model} ${d.angleDeg}');
+        expect(d.solidsOutletMm, hits.single.solids, reason: '${s.model} ${d.angleDeg}');
+        expect(d.scrollPipeMm, hits.single.scroll, reason: '${s.model} ${d.angleDeg}');
+        matched++;
+      }
+    }
+    expect(matched, rows.length);
+  });
+
+  test('10°/15° olan modellerde iki kayıt, diğerlerinde tek kayıt vardır', () {
+    const twoAngles = {'S470', 'S530', 'S570', 'SX650'};
+    for (final s in decanterSpecs) {
+      if (twoAngles.contains(s.model)) {
+        expect(s.diameters.map((d) => d.angleDeg).toList(), [10, 15], reason: s.model);
+      } else if (s.model == 'S670') {
+        expect(s.diameters.map((d) => d.angleDeg).toList(), [10]);
+      } else {
+        expect(s.diameters.map((d) => d.angleDeg).toList(), [null], reason: s.model);
+      }
+    }
+  });
 }

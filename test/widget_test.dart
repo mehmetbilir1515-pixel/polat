@@ -14,6 +14,9 @@ void main() {
   testWidgets('G-Force aracı sonucu gösterir', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
+    // Kart listenin altında kalabilir; dokunmadan önce görünür alana kaydır.
+    await tester.ensureVisible(find.text('G-Force (RCF) Hesaplayıcı'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('G-Force (RCF) Hesaplayıcı'));
     await tester.pumpAndSettle();
 

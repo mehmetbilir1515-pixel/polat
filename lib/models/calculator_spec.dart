@@ -14,11 +14,16 @@ class NumberFieldSpec {
     required this.key,
     required this.label,
     required this.units,
+    this.showWhen,
   });
 
   final String key;
   final String label;
   final List<UnitOption> units;
+
+  /// Verilirse alan yalnızca seçim alanlarının hepsi bu değerlerdeyse görünür
+  /// (örn. `{'mode': 'back'}`). Gizli alanlar hesaplamaya girmez.
+  final Map<String, String>? showWhen;
 }
 
 class ChoiceOption {

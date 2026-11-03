@@ -15,7 +15,7 @@ Android ve iOS için mobil hesaplama araçları uygulaması (Flutter).
 **Dekantör Kütle Denkliği** (ana ekranda ilk sırada): ürün debisi (m³/h), yoğunluk (kg/m³) ve besleme/kek/sentrat kuru katı oranlarından kek ve sentrat kütle akışlarını, polimer tüketimini (kg/tDS), yakalama verimini, günlük değerleri ve % → AKM (mg/L) dönüşümünü hesaplar. Değerler yazıldıkça sonuçlar anında güncellenir.
 
 1. **G-Force (RCF)**: tambur iç çapı ve devirden santrifüj kuvveti
-2. **Diferansiyel hız**: ana tahrik, arka tahrik, dişli kutusu oranı ve yöne göre hız farkı
+2. **Diferansiyel hız**: iki modlu. "Diferansiyel hızı hesapla": ana tahrik, arka tahrik, dişli kutusu oranı ve yöne göre hız farkı. "Arka tahrik devrini hesapla": ana tahrik, hedef diferansiyel hız, oran ve yönden gereken arka tahrik devri (ileri: ana − fark·oran; geri: fark·oran − ana; sonuç negatifse hata verir)
 3. **Debi dönüştürücü**: GPM, LPM, m³/saat, BPD
 4. **Kasnak hızı**: motor devri ve kasnak çaplarından çıkış mili devri
 5. **Kayış uzunluğu**: kasnak çapları ve eksen mesafesinden tahmini kayış boyu

@@ -45,10 +45,18 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     super.dispose();
   }
 
+  bool _isVisible(NumberFieldSpec field) {
+    final rule = field.showWhen;
+    if (rule == null) {
+      return true;
+    }
+    return rule.entries.every((e) => _choices[e.key] == e.value);
+  }
+
   void _calculate() {
     FocusScope.of(context).unfocus();
     final numbers = <String, double>{};
-    for (final field in widget.spec.numberFields) {
+    for (final field in widget.spec.numberFields.where(_isVisible)) {
       final parsed = parseNumber(_controllers[field.key]!.text);
       if (parsed == null) {
         setState(() {
@@ -106,7 +114,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             ],
             onChanged: (value) {
               if (value != null) {
-                setState(() => _choices[field.key] = value);
+                // Seçim değişince (örn. hesaplama modu) eski sonuç geçersizdir.
+                setState(() {
+                  _choices[field.key] = value;
+                  _results = null;
+                  _error = null;
+                });
               }
             },
           ),
@@ -119,6 +132,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     final hasUnitChoice = field.units.length > 1;
     final singleLabel = field.units.first.label;
     return Padding(
+      key: ValueKey('field-${field.key}'),
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,7 +239,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               Text(spec.description, style: theme.textTheme.bodyMedium),
               const SizedBox(height: 16),
               for (final field in spec.choiceFields) _buildChoiceField(field),
-              for (final field in spec.numberFields) _buildNumberField(field),
+              for (final field in spec.numberFields.where(_isVisible)) _buildNumberField(field),
               Row(
                 children: [
                   Expanded(

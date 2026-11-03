@@ -76,6 +76,103 @@ void main() {
     });
   });
 
+  group('Arka tahrik devri (ters hesap)', () {
+    // Elle hesap: ana 3000, oran 30.
+    test('ileri yön: 3000 - 3,5 x 30 = 2895', () {
+      expect(
+        backDriveSpeed(
+          mainDriveRpm: 3000,
+          differentialRpm: 3.5,
+          gearboxRatio: 30,
+          rotation: BackDriveRotation.forward,
+        ),
+        closeTo(2895, 1e-9),
+      );
+    });
+
+    test('geri yön: 110 x 30 - 3000 = 300', () {
+      expect(
+        backDriveSpeed(
+          mainDriveRpm: 3000,
+          differentialRpm: 110,
+          gearboxRatio: 30,
+          rotation: BackDriveRotation.reverse,
+        ),
+        closeTo(300, 1e-9),
+      );
+    });
+
+    test('geri yön sınırı: 100 x 30 - 3000 = 0', () {
+      expect(
+        backDriveSpeed(
+          mainDriveRpm: 3000,
+          differentialRpm: 100,
+          gearboxRatio: 30,
+          rotation: BackDriveRotation.reverse,
+        ),
+        0,
+      );
+    });
+
+    test('negatif sonuç hata verir (ileri: 101 x 30 > 3000; geri: 90 x 30 < 3000)', () {
+      expect(
+        () => backDriveSpeed(
+          mainDriveRpm: 3000,
+          differentialRpm: 101,
+          gearboxRatio: 30,
+          rotation: BackDriveRotation.forward,
+        ),
+        throwsA(isA<CalculationException>()),
+      );
+      expect(
+        () => backDriveSpeed(
+          mainDriveRpm: 3000,
+          differentialRpm: 90,
+          gearboxRatio: 30,
+          rotation: BackDriveRotation.reverse,
+        ),
+        throwsA(isA<CalculationException>()),
+      );
+    });
+
+    test('geçersiz girdi: oran sıfır, ana devir sıfır, negatif fark', () {
+      for (final args in [
+        (3000.0, 3.0, 0.0),
+        (0.0, 3.0, 30.0),
+        (3000.0, -1.0, 30.0),
+      ]) {
+        expect(
+          () => backDriveSpeed(
+            mainDriveRpm: args.$1,
+            differentialRpm: args.$2,
+            gearboxRatio: args.$3,
+            rotation: BackDriveRotation.forward,
+          ),
+          throwsA(isA<CalculationException>()),
+          reason: '$args',
+        );
+      }
+    });
+
+    test('düz formülle gidiş-dönüş tutarlıdır', () {
+      for (final rotation in BackDriveRotation.values) {
+        final back = backDriveSpeed(
+          mainDriveRpm: 3000,
+          differentialRpm: 120,
+          gearboxRatio: 30,
+          rotation: rotation,
+        );
+        final diff = differentialSpeed(
+          mainDriveRpm: 3000,
+          backDriveRpm: back,
+          gearboxRatio: 30,
+          rotation: rotation,
+        );
+        expect(diff, closeTo(120, 1e-9), reason: rotation.name);
+      }
+    });
+  });
+
   group('Debi dönüştürücü', () {
     test('100 GPM -> LPM', () {
       expect(

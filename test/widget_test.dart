@@ -29,6 +29,55 @@ void main() {
     expect(find.textContaining('2.516'), findsOneWidget);
   });
 
+  testWidgets('Diferansiyel hız: ikinci modda arka tahrik devri hesaplanır', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    // Kart listenin altında; tembel listede önce kaydır.
+    await tester.scrollUntilVisible(
+      find.text('Diferansiyel Hız Hesaplayıcı'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text('Diferansiyel Hız Hesaplayıcı'));
+    await tester.pumpAndSettle();
+
+    // Varsayılan mod: arka tahrik devri girilir.
+    expect(find.widgetWithText(TextField, 'Arka tahrik devri'), findsOneWidget);
+    expect(find.widgetWithText(TextField, 'Diferansiyel hız'), findsNothing);
+    await tester.enterText(find.byType(TextField).at(0), '3000');
+    await tester.enterText(find.byType(TextField).at(1), '2900');
+    await tester.enterText(find.byType(TextField).at(2), '30');
+    await tester.tap(find.text('Hesapla'));
+    await tester.pump();
+    expect(find.text('3,33 RPM'), findsOneWidget);
+
+    // İkinci moda geçince eski sonuç temizlenir, alanlar değişir.
+    await tester.tap(find.byType(DropdownButton<String>).first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Arka tahrik devrini hesapla').last);
+    await tester.pumpAndSettle();
+    expect(find.text('3,33 RPM'), findsNothing);
+    expect(find.widgetWithText(TextField, 'Arka tahrik devri'), findsNothing);
+    expect(find.widgetWithText(TextField, 'Diferansiyel hız'), findsOneWidget);
+
+    // Elle hesap: 3000 - 3,5 x 30 = 2.895 (ileri).
+    await tester.enterText(find.byType(TextField).at(0), '3000');
+    await tester.enterText(find.byType(TextField).at(1), '3,5');
+    await tester.enterText(find.byType(TextField).at(2), '30');
+    await tester.tap(find.text('Hesapla'));
+    await tester.pump();
+    expect(find.text('2.895,00 RPM'), findsOneWidget);
+
+    // Geri yönde aynı fark için negatif sonuç: hata görünür.
+    await tester.tap(find.byType(DropdownButton<String>).last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Geri').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Hesapla'));
+    await tester.pump();
+    expect(find.textContaining('negatif çıkıyor'), findsOneWidget);
+  });
+
   testWidgets('Kütle denkliği ekranı örnek değerlerle sonuç gösterir', (tester) async {
     await tester.pumpWidget(const PolatApp());
 

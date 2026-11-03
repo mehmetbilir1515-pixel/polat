@@ -62,13 +62,22 @@ final List<CalculatorSpec> calculatorSpecs = [
     },
   ),
 
-  // 2) Diferansiyel hız
+  // 2) Diferansiyel hız (iki hesaplama modu)
   CalculatorSpec(
     id: 'differential-speed',
     title: 'Diferansiyel Hız Hesaplayıcı',
-    description: 'Tambur ile helezon arasındaki hız farkını hesaplar.',
+    description:
+        'Tambur ile helezon arasındaki hız farkını hesaplar; ya da hedef diferansiyel hız için gereken arka tahrik devrini verir.',
     icon: Icons.compare_arrows,
     choiceFields: const [
+      ChoiceFieldSpec(
+        key: 'mode',
+        label: 'Hesaplama modu',
+        options: [
+          ChoiceOption('diff', 'Diferansiyel hızı hesapla'),
+          ChoiceOption('back', 'Arka tahrik devrini hesapla'),
+        ],
+      ),
       ChoiceFieldSpec(
         key: 'rotation',
         label: 'Arka tahrik dönüş yönü',
@@ -88,6 +97,13 @@ final List<CalculatorSpec> calculatorSpecs = [
         key: 'back',
         label: 'Arka tahrik devri',
         units: [UnitOption('RPM', 1)],
+        showWhen: {'mode': 'diff'},
+      ),
+      NumberFieldSpec(
+        key: 'diff',
+        label: 'Diferansiyel hız',
+        units: [UnitOption('RPM', 1)],
+        showWhen: {'mode': 'back'},
       ),
       NumberFieldSpec(
         key: 'ratio',
@@ -96,13 +112,29 @@ final List<CalculatorSpec> calculatorSpecs = [
       ),
     ],
     calculate: (n, c) {
+      final rotation = c['rotation'] == 'reverse'
+          ? BackDriveRotation.reverse
+          : BackDriveRotation.forward;
+      if (c['mode'] == 'back') {
+        final back = backDriveSpeed(
+          mainDriveRpm: n['main']!,
+          differentialRpm: n['diff']!,
+          gearboxRatio: n['ratio']!,
+          rotation: rotation,
+        );
+        return [
+          ResultItem(
+            'Arka tahrik devri',
+            '${formatNumber(back, decimals: 2)} RPM',
+            primary: true,
+          ),
+        ];
+      }
       final diff = differentialSpeed(
         mainDriveRpm: n['main']!,
         backDriveRpm: n['back']!,
         gearboxRatio: n['ratio']!,
-        rotation: c['rotation'] == 'reverse'
-            ? BackDriveRotation.reverse
-            : BackDriveRotation.forward,
+        rotation: rotation,
       );
       return [
         ResultItem(

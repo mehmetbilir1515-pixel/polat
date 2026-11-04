@@ -76,7 +76,7 @@ void main() {
     });
   });
 
-  group('Arka tahrik devri (ters hesap)', () {
+  group('Helezon devri (ters hesap)', () {
     // Elle hesap: ana 3000, oran 30.
     test('ileri yön: 3000 - 3,5 x 30 = 2895', () {
       expect(

@@ -1,6 +1,6 @@
 import 'validation.dart';
 
-/// Arka tahrik dönüş yönü.
+/// Şanzıman tipi: ileri = ZS, geri = ZSPN (arka tahrik dönüş yönü).
 enum BackDriveRotation { forward, reverse }
 
 /// Tambur (bowl) ile helezon (conveyor) arasındaki diferansiyel hız, RPM.
@@ -13,8 +13,8 @@ double differentialSpeed({
   required double gearboxRatio,
   required BackDriveRotation rotation,
 }) {
-  requirePositive(mainDriveRpm, 'Ana tahrik devri');
-  requireNonNegative(backDriveRpm, 'Arka tahrik devri');
+  requirePositive(mainDriveRpm, 'Tambur devri');
+  requireNonNegative(backDriveRpm, 'Helezon devri');
   requirePositive(gearboxRatio, 'Dişli kutusu oranı');
   final combined = rotation == BackDriveRotation.forward
       ? mainDriveRpm - backDriveRpm
@@ -22,7 +22,7 @@ double differentialSpeed({
   return combined / gearboxRatio;
 }
 
-/// Ters hesap: hedef diferansiyel hızdan gereken arka tahrik devri, RPM.
+/// Ters hesap: hedef diferansiyel hızdan gereken helezon (arka tahrik) devri, RPM.
 ///
 /// İleri yönde: ana − fark · oran. Geri yönde: fark · oran − ana.
 /// (Düz formülün tersidir; sonuç negatif çıkarsa bu değerlerle o yönde çalışılamaz.)
@@ -32,7 +32,7 @@ double backDriveSpeed({
   required double gearboxRatio,
   required BackDriveRotation rotation,
 }) {
-  requirePositive(mainDriveRpm, 'Ana tahrik devri');
+  requirePositive(mainDriveRpm, 'Tambur devri');
   requireNonNegative(differentialRpm, 'Diferansiyel hız');
   requirePositive(gearboxRatio, 'Dişli kutusu oranı');
   final scaled = differentialRpm * gearboxRatio;
@@ -46,10 +46,10 @@ double backDriveSpeed({
   if (back < 0) {
     throw CalculationException(
       rotation == BackDriveRotation.forward
-          ? 'Bu diferansiyel hız için ileri yönde arka tahrik devri negatif çıkıyor '
-              '(diferansiyel hız × oran, ana tahrik devrinden büyük olamaz).'
-          : 'Bu diferansiyel hız için geri yönde arka tahrik devri negatif çıkıyor '
-              '(diferansiyel hız × oran, ana tahrik devrinden küçük olamaz).',
+          ? 'Bu diferansiyel hız için İleri (ZS) şanzıman tipinde helezon devri negatif çıkıyor '
+              '(diferansiyel hız × oran, tambur devrinden büyük olamaz).'
+          : 'Bu diferansiyel hız için Geri (ZSPN) şanzıman tipinde helezon devri negatif çıkıyor '
+              '(diferansiyel hız × oran, tambur devrinden küçük olamaz).',
     );
   }
   return back;

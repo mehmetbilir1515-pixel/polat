@@ -67,7 +67,7 @@ final List<CalculatorSpec> calculatorSpecs = [
     id: 'differential-speed',
     title: 'Diferansiyel Hız Hesaplayıcı',
     description:
-        'Tambur ile helezon arasındaki hız farkını hesaplar; ya da hedef diferansiyel hız için gereken arka tahrik devrini verir.',
+        'Tambur ile helezon arasındaki hız farkını hesaplar; ya da hedef diferansiyel hız için gereken helezon devrini verir.',
     icon: Icons.compare_arrows,
     choiceFields: const [
       ChoiceFieldSpec(
@@ -75,27 +75,27 @@ final List<CalculatorSpec> calculatorSpecs = [
         label: 'Hesaplama modu',
         options: [
           ChoiceOption('diff', 'Diferansiyel hızı hesapla'),
-          ChoiceOption('back', 'Arka tahrik devrini hesapla'),
+          ChoiceOption('back', 'Helezon devrini hesapla'),
         ],
       ),
       ChoiceFieldSpec(
         key: 'rotation',
-        label: 'Arka tahrik dönüş yönü',
+        label: 'Şanzıman tipi',
         options: [
-          ChoiceOption('forward', 'İleri'),
-          ChoiceOption('reverse', 'Geri'),
+          ChoiceOption('forward', 'İleri (ZS)'),
+          ChoiceOption('reverse', 'Geri (ZSPN)'),
         ],
       ),
     ],
     numberFields: const [
       NumberFieldSpec(
         key: 'main',
-        label: 'Ana tahrik devri',
+        label: 'Tambur Devri',
         units: [UnitOption('RPM', 1)],
       ),
       NumberFieldSpec(
         key: 'back',
-        label: 'Arka tahrik devri',
+        label: 'Helezon Devri',
         units: [UnitOption('RPM', 1)],
         showWhen: {'mode': 'diff'},
       ),
@@ -124,7 +124,7 @@ final List<CalculatorSpec> calculatorSpecs = [
         );
         return [
           ResultItem(
-            'Arka tahrik devri',
+            'Helezon Devri',
             '${formatNumber(back, decimals: 2)} RPM',
             primary: true,
           ),

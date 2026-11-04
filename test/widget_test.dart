@@ -29,7 +29,7 @@ void main() {
     expect(find.textContaining('2.516'), findsOneWidget);
   });
 
-  testWidgets('Diferansiyel hız: ikinci modda arka tahrik devri hesaplanır', (tester) async {
+  testWidgets('Diferansiyel hız: ikinci modda helezon devri hesaplanır', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
     // Kart listenin altında; tembel listede önce kaydır.
@@ -41,8 +41,9 @@ void main() {
     await tester.tap(find.text('Diferansiyel Hız Hesaplayıcı'));
     await tester.pumpAndSettle();
 
-    // Varsayılan mod: arka tahrik devri girilir.
-    expect(find.widgetWithText(TextField, 'Arka tahrik devri'), findsOneWidget);
+    // Varsayılan mod: helezon devri girilir.
+    expect(find.widgetWithText(TextField, 'Helezon Devri'), findsOneWidget);
+    expect(find.widgetWithText(TextField, 'Tambur Devri'), findsOneWidget);
     expect(find.widgetWithText(TextField, 'Diferansiyel hız'), findsNothing);
     await tester.enterText(find.byType(TextField).at(0), '3000');
     await tester.enterText(find.byType(TextField).at(1), '2900');
@@ -54,13 +55,13 @@ void main() {
     // İkinci moda geçince eski sonuç temizlenir, alanlar değişir.
     await tester.tap(find.byType(DropdownButton<String>).first);
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Arka tahrik devrini hesapla').last);
+    await tester.tap(find.text('Helezon devrini hesapla').last);
     await tester.pumpAndSettle();
     expect(find.text('3,33 RPM'), findsNothing);
-    expect(find.widgetWithText(TextField, 'Arka tahrik devri'), findsNothing);
+    expect(find.widgetWithText(TextField, 'Helezon Devri'), findsNothing);
     expect(find.widgetWithText(TextField, 'Diferansiyel hız'), findsOneWidget);
 
-    // Elle hesap: 3000 - 3,5 x 30 = 2.895 (ileri).
+    // Elle hesap: 3000 - 3,5 x 30 = 2.895 (İleri (ZS)).
     await tester.enterText(find.byType(TextField).at(0), '3000');
     await tester.enterText(find.byType(TextField).at(1), '3,5');
     await tester.enterText(find.byType(TextField).at(2), '30');
@@ -68,10 +69,10 @@ void main() {
     await tester.pump();
     expect(find.text('2.895,00 RPM'), findsOneWidget);
 
-    // Geri yönde aynı fark için negatif sonuç: hata görünür.
+    // Geri (ZSPN) tipinde aynı fark için negatif sonuç: hata görünür.
     await tester.tap(find.byType(DropdownButton<String>).last);
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Geri').last);
+    await tester.tap(find.text('Geri (ZSPN)').last);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Hesapla'));
     await tester.pump();

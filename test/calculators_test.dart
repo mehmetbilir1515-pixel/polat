@@ -155,20 +155,25 @@ void main() {
     });
 
     test('düz formülle gidiş-dönüş tutarlıdır', () {
-      for (final rotation in BackDriveRotation.values) {
+      // Yöne göre geçerli fark: ileri için fark x oran <= 3000, geri için >= 3000.
+      const diffByRotation = {
+        BackDriveRotation.forward: 50.0, // arka = 3000 - 1500 = 1500
+        BackDriveRotation.reverse: 120.0, // arka = 3600 - 3000 = 600
+      };
+      for (final entry in diffByRotation.entries) {
         final back = backDriveSpeed(
           mainDriveRpm: 3000,
-          differentialRpm: 120,
+          differentialRpm: entry.value,
           gearboxRatio: 30,
-          rotation: rotation,
+          rotation: entry.key,
         );
         final diff = differentialSpeed(
           mainDriveRpm: 3000,
           backDriveRpm: back,
           gearboxRatio: 30,
-          rotation: rotation,
+          rotation: entry.key,
         );
-        expect(diff, closeTo(120, 1e-9), reason: rotation.name);
+        expect(diff, closeTo(entry.value, 1e-9), reason: entry.key.name);
       }
     });
   });

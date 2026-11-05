@@ -29,6 +29,32 @@ void main() {
     expect(find.textContaining('2.516'), findsOneWidget);
   });
 
+  testWidgets('G-Force: ikinci modda santrifüj kuvvetinden devir hesaplanır', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    await tester.ensureVisible(find.text('G-Force (RCF) Hesaplayıcı'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('G-Force (RCF) Hesaplayıcı'));
+    await tester.pumpAndSettle();
+
+    expect(find.widgetWithText(TextField, 'Devir (RPM)'), findsOneWidget);
+    expect(find.widgetWithText(TextField, 'Santrifüj Kuvveti'), findsNothing);
+
+    await tester.tap(find.byType(DropdownButton<String>).first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Devri hesapla').last);
+    await tester.pumpAndSettle();
+    expect(find.widgetWithText(TextField, 'Devir (RPM)'), findsNothing);
+    expect(find.widgetWithText(TextField, 'Santrifüj Kuvveti'), findsOneWidget);
+
+    // Bağımsız hesap: 500 mm çap, 3000 g -> 3.275,8 RPM.
+    await tester.enterText(find.byType(TextField).at(0), '500');
+    await tester.enterText(find.byType(TextField).at(1), '3000');
+    await tester.tap(find.text('Hesapla'));
+    await tester.pump();
+    expect(find.text('3.275,8 RPM'), findsOneWidget);
+  });
+
   testWidgets('Diferansiyel hız: ikinci modda helezon devri hesaplanır', (tester) async {
     await tester.pumpWidget(const PolatApp());
 

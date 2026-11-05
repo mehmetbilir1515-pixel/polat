@@ -18,3 +18,16 @@ double relativeCentrifugalForce({
   final omega = 2 * math.pi * rpm / 60;
   return omega * omega * (diameterM / 2) / standardGravity;
 }
+
+/// Ters hesap: hedef santrifüj kuvvetinden (g) gereken devir, RPM.
+///
+/// RCF = ω² · r / g  =>  ω = √(RCF · g / r), RPM = ω · 60 / (2π).
+double rpmForCentrifugalForce({
+  required double diameterM,
+  required double rcf,
+}) {
+  requirePositive(diameterM, 'Tambur iç çapı');
+  requirePositive(rcf, 'Santrifüj kuvveti');
+  final omega = math.sqrt(rcf * standardGravity / (diameterM / 2));
+  return omega * 60 / (2 * math.pi);
+}

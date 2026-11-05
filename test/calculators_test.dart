@@ -26,6 +26,39 @@ void main() {
       );
     });
 
+    // Beklenen değerler bağımsız bir Python hesabından: RPM = 60/(2π) · √(RCF·g / (D/2)).
+    test('ters hesap: 0,5 m çap, 3000 g -> 3275,837 RPM', () {
+      expect(
+        rpmForCentrifugalForce(diameterM: 0.5, rcf: 3000),
+        closeTo(3275.8374, 0.001),
+      );
+    });
+
+    test('ters hesap: 0,4 m çap, 2000 g -> 2990,417 RPM', () {
+      expect(
+        rpmForCentrifugalForce(diameterM: 0.4, rcf: 2000),
+        closeTo(2990.4168, 0.001),
+      );
+    });
+
+    test('ters hesap düz formülle gidiş-dönüş tutarlıdır', () {
+      for (final d in [0.2, 0.45, 0.9]) {
+        final rpm = rpmForCentrifugalForce(diameterM: d, rcf: 2500);
+        expect(relativeCentrifugalForce(diameterM: d, rpm: rpm), closeTo(2500, 1e-6));
+      }
+    });
+
+    test('ters hesap geçersiz girdide hata verir', () {
+      expect(
+        () => rpmForCentrifugalForce(diameterM: 0, rcf: 3000),
+        throwsA(isA<CalculationException>()),
+      );
+      expect(
+        () => rpmForCentrifugalForce(diameterM: 0.5, rcf: 0),
+        throwsA(isA<CalculationException>()),
+      );
+    });
+
     test('geçersiz girdi hata verir', () {
       expect(
         () => relativeCentrifugalForce(diameterM: 0, rpm: 3000),

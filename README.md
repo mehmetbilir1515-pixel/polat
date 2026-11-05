@@ -14,7 +14,7 @@ Android ve iOS için mobil hesaplama araçları uygulaması (Flutter).
 
 **Dekantör Kütle Denkliği** (ana ekranda ilk sırada): ürün debisi (m³/h), yoğunluk (kg/m³) ve besleme/kek/sentrat kuru katı oranlarından kek ve sentrat kütle akışlarını, polimer tüketimini (kg/tDS), yakalama verimini, günlük değerleri ve % → AKM (mg/L) dönüşümünü hesaplar. Değerler yazıldıkça sonuçlar anında güncellenir.
 
-1. **G-Force (RCF)**: tambur iç çapı ve devirden santrifüj kuvveti
+1. **G-Force (RCF)**: iki modlu. "Santrifüj kuvvetini hesapla": tambur iç çapı ve devirden santrifüj kuvveti. "Devri hesapla": tambur iç çapı ve hedef santrifüj kuvvetinden (g) gereken devir
 2. **Diferansiyel hız**: iki modlu. "Diferansiyel hızı hesapla": tambur devri, helezon devri, dişli kutusu oranı ve şanzıman tipine (İleri (ZS) / Geri (ZSPN)) göre hız farkı. "Helezon devrini hesapla": tambur devri, hedef diferansiyel hız, oran ve şanzıman tipinden gereken helezon devri (İleri (ZS): tambur − fark·oran; Geri (ZSPN): fark·oran − tambur; sonuç negatifse hata verir)
 3. **Debi dönüştürücü**: GPM, LPM, m³/saat, BPD
 4. **Kasnak hızı**: motor devri ve kasnak çaplarından çıkış mili devri

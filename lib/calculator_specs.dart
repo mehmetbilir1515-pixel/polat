@@ -28,8 +28,19 @@ final List<CalculatorSpec> calculatorSpecs = [
   CalculatorSpec(
     id: 'g-force',
     title: 'G-Force (RCF) Hesaplayıcı',
-    description: 'Tambur iç çapı ve devirden santrifüj kuvvetini (g) hesaplar.',
+    description:
+        'Tambur iç çapı ve devirden santrifüj kuvvetini (g) hesaplar; ya da hedef santrifüj kuvveti için gereken devri verir.',
     icon: Icons.rotate_right,
+    choiceFields: const [
+      ChoiceFieldSpec(
+        key: 'mode',
+        label: 'Hesaplama modu',
+        options: [
+          ChoiceOption('force', 'Santrifüj kuvvetini hesapla'),
+          ChoiceOption('rpm', 'Devri hesapla'),
+        ],
+      ),
+    ],
     numberFields: const [
       NumberFieldSpec(
         key: 'diameter',
@@ -45,9 +56,29 @@ final List<CalculatorSpec> calculatorSpecs = [
         key: 'rpm',
         label: 'Devir (RPM)',
         units: [UnitOption('RPM', 1)],
+        showWhen: {'mode': 'force'},
+      ),
+      NumberFieldSpec(
+        key: 'force',
+        label: 'Santrifüj Kuvveti',
+        units: [UnitOption('g', 1)],
+        showWhen: {'mode': 'rpm'},
       ),
     ],
     calculate: (n, c) {
+      if (c['mode'] == 'rpm') {
+        final rpm = rpmForCentrifugalForce(
+          diameterM: n['diameter']!,
+          rcf: n['force']!,
+        );
+        return [
+          ResultItem(
+            'Devir (RPM)',
+            '${formatNumber(rpm, decimals: 1)} RPM',
+            primary: true,
+          ),
+        ];
+      }
       final rcf = relativeCentrifugalForce(
         diameterM: n['diameter']!,
         rpm: n['rpm']!,

@@ -2,18 +2,22 @@ import 'package:flutter/material.dart';
 
 import '../theme.dart';
 
-/// Koyu zeminli "DEKANTÖR MODELİ SEÇİNİZ" açılır liste kutusu.
+/// Koyu zeminli açılır liste kutusu (varsayılan başlık: "DEKANTÖR MODELİ SEÇİNİZ").
 class ModelSelector extends StatelessWidget {
   const ModelSelector({
     super.key,
     required this.models,
     required this.value,
     required this.onChanged,
+    this.title = 'DEKANTÖR MODELİ SEÇİNİZ',
   });
 
   final List<String> models;
   final String? value;
   final ValueChanged<String?> onChanged;
+
+  /// Kutunun üstündeki başlık.
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +30,8 @@ class ModelSelector extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text(
-            'DEKANTÖR MODELİ SEÇİNİZ',
+          Text(
+            title,
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),

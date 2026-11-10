@@ -8,6 +8,12 @@ void main() {
 
     expect(find.text('POLAT R&D'), findsOneWidget);
     expect(find.byType(Image), findsOneWidget); // P logosu
+    // Liste tembel kurulur; G-Force kartı için önce kaydır.
+    await tester.scrollUntilVisible(
+      find.text('G-Force (RCF) Hesaplayıcı'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('G-Force (RCF) Hesaplayıcı'), findsOneWidget);
   });
 
@@ -15,8 +21,11 @@ void main() {
     await tester.pumpWidget(const PolatApp());
 
     // Kart listenin altında kalabilir; dokunmadan önce görünür alana kaydır.
-    await tester.ensureVisible(find.text('G-Force (RCF) Hesaplayıcı'));
-    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('G-Force (RCF) Hesaplayıcı'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('G-Force (RCF) Hesaplayıcı'));
     await tester.pumpAndSettle();
 
@@ -32,8 +41,11 @@ void main() {
   testWidgets('G-Force: ikinci modda santrifüj kuvvetinden devir hesaplanır', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await tester.ensureVisible(find.text('G-Force (RCF) Hesaplayıcı'));
-    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('G-Force (RCF) Hesaplayıcı'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('G-Force (RCF) Hesaplayıcı'));
     await tester.pumpAndSettle();
 
@@ -53,6 +65,68 @@ void main() {
     await tester.tap(find.text('Hesapla'));
     await tester.pump();
     expect(find.text('3.275,8 RPM'), findsOneWidget);
+  });
+
+  testWidgets('Dekantör şanzıman motor bilgisi: seçim yapılınca yapılandırmalar görünür', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    await tester.scrollUntilVisible(
+      find.text('Dekantör Şanzıman Motor Bilgisi'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text('Dekantör Şanzıman Motor Bilgisi'));
+    await tester.pumpAndSettle();
+
+    // Seçim yapılmadan bilgi yok.
+    expect(find.text('Şanzıman Tipi'), findsNothing);
+
+    // S200: Excel'de iki satır (ZS612/87 ve ZSPN612/105).
+    await tester.tap(find.byType(DropdownButton<String>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('S200, Ø200mm').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('S200, Ø200mm — 2 yapılandırma'), findsOneWidget);
+    expect(find.text('Yapılandırma 1 / 2'), findsOneWidget);
+    expect(find.text('Yapılandırma 2 / 2'), findsOneWidget);
+    expect(find.text('ZS612/87'), findsOneWidget);
+    expect(find.text('ZSPN612/105'), findsOneWidget);
+    expect(find.text('5.482'), findsNWidgets(2)); // 50 Hz tambur devri
+    expect(find.text('4.500'), findsNWidgets(2)); // şanzıman giriş devri
+    expect(find.text('5,5KW - 3000D/D - B5 - IE3'), findsNWidgets(2));
+    expect(find.text('630 Nm'), findsNWidgets(2));
+    expect(find.text('⌀136mm'), findsNWidgets(2));
+  });
+
+  testWidgets('Dekantör şanzıman motor bilgisi: tek yapılandırma; X tire, YOK olduğu gibi', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    await tester.scrollUntilVisible(
+      find.text('Dekantör Şanzıman Motor Bilgisi'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text('Dekantör Şanzıman Motor Bilgisi'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(DropdownButton<String>));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('S840, Ø835mm').last,
+      100,
+      scrollable: find.byType(Scrollable).last,
+    );
+    await tester.tap(find.text('S840, Ø835mm').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('S840, Ø835mm — 1 yapılandırma'), findsOneWidget);
+    expect(find.textContaining('Yapılandırma 1'), findsNothing);
+    expect(find.text('ZSPN625/129'), findsOneWidget);
+    expect(find.text('30960 Nm'), findsOneWidget);
+    expect(find.text('YOK'), findsNWidgets(2)); // helezon motor ve şanzıman kasnağı
+    expect(find.text('2.561'), findsOneWidget);
+    expect(find.text('—'), findsOneWidget); // şanzıman giriş devri "X"
   });
 
   testWidgets('Diferansiyel hız: ikinci modda helezon devri hesaplanır', (tester) async {

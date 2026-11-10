@@ -5,6 +5,7 @@ import 'bearing_lubrication_screen.dart';
 import 'calculator_screen.dart';
 import 'decanter_3000g_screen.dart';
 import 'decanter_specs_screen.dart';
+import 'drive_config_screen.dart';
 import 'mass_balance_screen.dart';
 import 'rotation_direction_screen.dart';
 
@@ -72,6 +73,12 @@ class HomeScreen extends StatelessWidget {
         title: 'DEKANTÖR MOTOR DÖNÜŞ YÖNÜ',
         subtitle: 'Model, şanzıman ve motor tipine göre ana / helezon motoru dönüş yönü.',
         screen: () => const RotationDirectionScreen(),
+      ),
+      (
+        icon: Icons.settings_applications_outlined,
+        title: 'Dekantör Şanzıman Motor Bilgisi',
+        subtitle: 'Seri kodu ve tambur çapını seçin; motor, şanzıman ve kasnak bilgilerini görün.',
+        screen: () => const DriveConfigScreen(),
       ),
     ];
 

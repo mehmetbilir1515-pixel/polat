@@ -2,6 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:polat_rd/app.dart';
 
+/// Ana ekran listesi tembel kurulur: kartı önce kurdurur, sonra ekrana tam getirir
+/// (kurulmuş ama ekranın dışında kalan karta dokunmak boşa gider).
+Future<void> _scrollToHomeTile(WidgetTester tester, String title) async {
+  await tester.scrollUntilVisible(
+    find.text(title),
+    200,
+    scrollable: find.byType(Scrollable).first,
+  );
+  await tester.ensureVisible(find.text(title));
+  await tester.pumpAndSettle();
+}
+
 void main() {
   testWidgets('Ana ekran başlığı ve ilk araç görünür', (tester) async {
     await tester.pumpWidget(const PolatApp());
@@ -9,11 +21,7 @@ void main() {
     expect(find.text('POLAT R&D'), findsOneWidget);
     expect(find.byType(Image), findsOneWidget); // P logosu
     // Liste tembel kurulur; G-Force kartı için önce kaydır.
-    await tester.scrollUntilVisible(
-      find.text('G-Force (RCF) Hesaplayıcı'),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
+    await _scrollToHomeTile(tester, 'G-Force (RCF) Hesaplayıcı');
     expect(find.text('G-Force (RCF) Hesaplayıcı'), findsOneWidget);
   });
 
@@ -21,11 +29,7 @@ void main() {
     await tester.pumpWidget(const PolatApp());
 
     // Kart listenin altında kalabilir; dokunmadan önce görünür alana kaydır.
-    await tester.scrollUntilVisible(
-      find.text('G-Force (RCF) Hesaplayıcı'),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
+    await _scrollToHomeTile(tester, 'G-Force (RCF) Hesaplayıcı');
     await tester.tap(find.text('G-Force (RCF) Hesaplayıcı'));
     await tester.pumpAndSettle();
 
@@ -41,11 +45,7 @@ void main() {
   testWidgets('G-Force: ikinci modda santrifüj kuvvetinden devir hesaplanır', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await tester.scrollUntilVisible(
-      find.text('G-Force (RCF) Hesaplayıcı'),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
+    await _scrollToHomeTile(tester, 'G-Force (RCF) Hesaplayıcı');
     await tester.tap(find.text('G-Force (RCF) Hesaplayıcı'));
     await tester.pumpAndSettle();
 
@@ -70,11 +70,7 @@ void main() {
   testWidgets('Dekantör şanzıman motor bilgisi: seçim yapılınca yapılandırmalar görünür', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await tester.scrollUntilVisible(
-      find.text('Dekantör Şanzıman Motor Bilgisi'),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
+    await _scrollToHomeTile(tester, 'Dekantör Şanzıman Motor Bilgisi');
     await tester.tap(find.text('Dekantör Şanzıman Motor Bilgisi'));
     await tester.pumpAndSettle();
 
@@ -102,11 +98,7 @@ void main() {
   testWidgets('Dekantör şanzıman motor bilgisi: tek yapılandırma; X tire, YOK olduğu gibi', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await tester.scrollUntilVisible(
-      find.text('Dekantör Şanzıman Motor Bilgisi'),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
+    await _scrollToHomeTile(tester, 'Dekantör Şanzıman Motor Bilgisi');
     await tester.tap(find.text('Dekantör Şanzıman Motor Bilgisi'));
     await tester.pumpAndSettle();
 
@@ -117,6 +109,8 @@ void main() {
       100,
       scrollable: find.byType(Scrollable).last,
     );
+    await tester.ensureVisible(find.text('S840, Ø835mm').last);
+    await tester.pumpAndSettle();
     await tester.tap(find.text('S840, Ø835mm').last);
     await tester.pumpAndSettle();
 
@@ -133,11 +127,7 @@ void main() {
     await tester.pumpWidget(const PolatApp());
 
     // Kart listenin altında; tembel listede önce kaydır.
-    await tester.scrollUntilVisible(
-      find.text('Diferansiyel Hız Hesaplayıcı'),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
+    await _scrollToHomeTile(tester, 'Diferansiyel Hız Hesaplayıcı');
     await tester.tap(find.text('Diferansiyel Hız Hesaplayıcı'));
     await tester.pumpAndSettle();
 
@@ -363,11 +353,7 @@ void main() {
     // S200: ana motor saat yönü tersi, helezon motoru saat yönü.
     expect(find.text('2 kayıt'), findsOneWidget);
     // Liste tembel kurulur; ikinci kart ekran dışında olabilir, önce kaydır.
-    await tester.scrollUntilVisible(
-      find.text('Motor: Helezon Motoru'),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
+    await _scrollToHomeTile(tester, 'Motor: Helezon Motoru');
     expect(find.text('Motor: Ana Motor', skipOffstage: false), findsOneWidget);
     expect(find.text('Motor: Helezon Motoru'), findsOneWidget);
     expect(find.text('SAAT YÖNÜ TERSİ', skipOffstage: false), findsOneWidget);

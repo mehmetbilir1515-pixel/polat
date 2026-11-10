@@ -104,14 +104,15 @@ void main() {
 
     await tester.tap(find.byType(DropdownButton<String>));
     await tester.pumpAndSettle();
+    // Açılır menü tembel kurulur; öğe henüz yokken `.last` hata verir, bu yüzden
+    // düz bir bulucu ile (henüz seçim yok, tek eşleşme) menüyü kaydır.
     await tester.scrollUntilVisible(
-      find.text('S840, Ø835mm').last,
-      100,
+      find.text('S840, Ø835mm'),
+      200,
       scrollable: find.byType(Scrollable).last,
     );
-    await tester.ensureVisible(find.text('S840, Ø835mm').last);
     await tester.pumpAndSettle();
-    await tester.tap(find.text('S840, Ø835mm').last);
+    await tester.tap(find.text('S840, Ø835mm'));
     await tester.pumpAndSettle();
 
     expect(find.text('S840, Ø835mm — 1 yapılandırma'), findsOneWidget);

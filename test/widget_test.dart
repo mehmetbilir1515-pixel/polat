@@ -124,6 +124,48 @@ void main() {
     expect(find.text('—'), findsOneWidget); // şanzıman giriş devri "X"
   });
 
+  testWidgets('Şanzıman tork bilgisi: tip seçince maks. tork dayanımı görünür', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    await _scrollToHomeTile(tester, 'Şanzıman Tork Bilgisi');
+    await tester.tap(find.text('Şanzıman Tork Bilgisi'));
+    await tester.pumpAndSettle();
+
+    // Seçim yapılmadan değer yok.
+    expect(find.text('Maks. Tork Dayanımı'), findsNothing);
+
+    await tester.tap(find.byType(DropdownButton<String>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('ZSPN614/105').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Maks. Tork Dayanımı'), findsOneWidget);
+    expect(find.text('1.370'), findsOneWidget);
+    expect(find.text('Nm'), findsOneWidget);
+  });
+
+  testWidgets('Şanzıman tork bilgisi: listenin sonundaki tip (ZS 622FX/59) seçilebilir', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    await _scrollToHomeTile(tester, 'Şanzıman Tork Bilgisi');
+    await tester.tap(find.text('Şanzıman Tork Bilgisi'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(DropdownButton<String>));
+    await tester.pumpAndSettle();
+    // Açılır menü tembel kurulur; henüz seçim yokken tek eşleşme vardır.
+    await tester.scrollUntilVisible(
+      find.text('ZS 622FX/59'),
+      200,
+      scrollable: find.byType(Scrollable).last,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('ZS 622FX/59'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('15.880'), findsOneWidget);
+  });
+
   testWidgets('Diferansiyel hız: ikinci modda helezon devri hesaplanır', (tester) async {
     await tester.pumpWidget(const PolatApp());
 

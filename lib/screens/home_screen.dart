@@ -6,6 +6,7 @@ import 'calculator_screen.dart';
 import 'decanter_3000g_screen.dart';
 import 'decanter_specs_screen.dart';
 import 'drive_config_screen.dart';
+import 'gearbox_torque_screen.dart';
 import 'mass_balance_screen.dart';
 import 'rotation_direction_screen.dart';
 
@@ -79,6 +80,12 @@ class HomeScreen extends StatelessWidget {
         title: 'Dekantör Şanzıman Motor Bilgisi',
         subtitle: 'Seri kodu ve tambur çapını seçin; motor, şanzıman ve kasnak bilgilerini görün.',
         screen: () => const DriveConfigScreen(),
+      ),
+      (
+        icon: Icons.speed_outlined,
+        title: 'Şanzıman Tork Bilgisi',
+        subtitle: 'Şanzıman tipini seçin; maksimum tork dayanımını (Nm) görün.',
+        screen: () => const GearboxTorqueScreen(),
       ),
     ];
 

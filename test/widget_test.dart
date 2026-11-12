@@ -270,6 +270,32 @@ void main() {
     expect(find.text('6'), findsOneWidget); // 6 L
   });
 
+  testWidgets('Şanzıman tork ve yağlama bilgisi: altta yağlama kılavuzu görünür', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    await _openHomeTile(tester, 'Şanzıman Tork ve Yağlama Bilgisi');
+
+    // Kılavuz tip seçilmeden de görünür; metinler HTML kılavuzundan.
+    for (final text in [
+      'Şanzıman Yağ Banyosu ile Yağlama',
+      'Şanzıman Gres Yağlama',
+      'Önerilen Yağlayıcılar',
+      'CLP 220',
+      'Mobilgear 600 XP',
+      'Mobil SHC 600',
+      'Gadus S3 V220C 2',
+      '*Gıda endüstrisi için uygundur.',
+      'Tab. 2: Önerilen yağlayıcılar',
+    ]) {
+      await tester.scrollUntilVisible(
+        find.text(text),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text(text), findsOneWidget, reason: text);
+    }
+  });
+
   testWidgets('Diferansiyel hız: ikinci modda helezon devri hesaplanır', (tester) async {
     await tester.pumpWidget(const PolatApp());
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../calculators/gearbox_torque.dart';
 import '../format.dart';
+import '../widgets/gearbox_lubrication_guide.dart';
 import '../widgets/model_selector.dart';
 
 /// Şanzıman tork ve yağlama bilgisi: şanzıman tipini seçince maksimum tork dayanımı (Nm),
@@ -115,6 +116,8 @@ class _GearboxTorqueScreenState extends State<GearboxTorqueScreen> {
                   ),
                 ),
               ],
+              const SizedBox(height: 24),
+              const GearboxLubricationGuide(),
             ],
           ),
         ),

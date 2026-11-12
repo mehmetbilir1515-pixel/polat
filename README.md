@@ -7,7 +7,7 @@ Android ve iOS için mobil hesaplama araçları uygulaması (Flutter).
 1. Dekantör Model Değerleri
 2. Diferansiyel Hız Hesaplayıcı
 3. Dekantör Şanzıman Motor Bilgisi
-4. Şanzıman Tork Bilgisi
+4. Şanzıman Tork ve Yağlama Bilgisi
 5. G-Force (RCF) Hesaplayıcı
 6. Dekantör Motor Dönüş Yönü
 7. Kayış Uzunluğu Hesaplayıcı
@@ -28,7 +28,7 @@ Android ve iOS için mobil hesaplama araçları uygulaması (Flutter).
 
 **Dekantör Şanzıman Motor Bilgisi**: Excel'deki "Konfigürasyon" sayfasından; **seri kodu ve tambur çapı** seçilince tambur/helezon motor gücü ve devri, şanzıman tipi ve torku, tambur konik açısı, kasnak ölçüleri ve 50 Hz devirleri gösterilir. Bir seçim için birden çok yapılandırma varsa (ör. S470: 13) hepsi ayrı kart olarak listelenir.
 
-**Şanzıman Tork Bilgisi**: şanzıman tipini (ZS612/87 … DESCH ZG50) seçince maksimum tork dayanımı (Nm) görünür; 28 şanzıman.
+**Şanzıman Tork ve Yağlama Bilgisi**: şanzıman tipini (ZS612/87 … DESCH ZG50) seçince maksimum tork dayanımı (Nm), yağ bilgisi (Gres / Sıvı), yağ miktarı (gres için kg, sıvı için L) ve gres ile sıvı yağ kodları görünür; 28 şanzıman.
 
 **Dekantör Model Değerleri**: modeli seçince maksimum çalışma devri, maksimum gövde devri, hidrolik kapasite (m³/h), katı çıkış çapı ve helezon boru çapı (mm) görünür. S470, S530, S570 ve SX650'de 10° ve 15° yapıların çapları aynı model girişinde birlikte gösterilir (S670'te yalnızca 10°). Modeller: S200, S300, S350, S430, S470, S530, S570, SX650, S670.
 

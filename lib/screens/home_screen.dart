@@ -49,8 +49,8 @@ List<HomeEntry> buildHomeEntries() => [
       // 4
       (
         icon: Icons.speed_outlined,
-        title: 'Şanzıman Tork Bilgisi',
-        subtitle: 'Şanzıman tipini seçin; maksimum tork dayanımını (Nm) görün.',
+        title: 'Şanzıman Tork ve Yağlama Bilgisi',
+        subtitle: 'Şanzıman tipini seçin; maks. tork dayanımı, yağ bilgisi, yağ miktarı ve yağ kodlarını görün.',
         screen: () => const GearboxTorqueScreen(),
       ),
       // 5

@@ -37,7 +37,7 @@ void main() {
       'Dekantör Model Değerleri',
       'Diferansiyel Hız Hesaplayıcı',
       'Dekantör Şanzıman Motor Bilgisi',
-      'Şanzıman Tork Bilgisi',
+      'Şanzıman Tork ve Yağlama Bilgisi',
       'G-Force (RCF) Hesaplayıcı',
       'Dekantör Motor Dönüş Yönü',
       'Kayış Uzunluğu Hesaplayıcı',
@@ -199,10 +199,10 @@ void main() {
     expect(find.text('—'), findsOneWidget); // şanzıman giriş devri "X"
   });
 
-  testWidgets('Şanzıman tork bilgisi: tip seçince maks. tork dayanımı görünür', (tester) async {
+  testWidgets('Şanzıman tork ve yağlama bilgisi: tip seçince tork, yağ bilgisi ve miktarı görünür', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await _openHomeTile(tester, 'Şanzıman Tork Bilgisi');
+    await _openHomeTile(tester, 'Şanzıman Tork ve Yağlama Bilgisi');
 
     // Seçim yapılmadan değer yok.
     expect(find.text('Maks. Tork Dayanımı'), findsNothing);
@@ -215,12 +215,43 @@ void main() {
     expect(find.text('Maks. Tork Dayanımı'), findsOneWidget);
     expect(find.text('1.370'), findsOneWidget);
     expect(find.text('Nm'), findsOneWidget);
+    // Tablo: ZSPN614/105 -> Sıvı, 1 L.
+    expect(find.text('Yağ Bilgisi'), findsOneWidget);
+    expect(find.text('Sıvı'), findsOneWidget);
+    expect(find.text('Yağ Miktarı'), findsOneWidget);
+    expect(find.text('1'), findsOneWidget);
+    expect(find.text('L'), findsOneWidget);
+    // Her seçimin altında sabit yağ kodu bilgisi.
+    expect(
+      find.text('Gres kodu ve tanımı: 150030090152 SHELL GADUS S2 U460L 2'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Sıvı Yağ Kodu ve Tanımı: 150030090006 MİNERAL DİŞLİ YAĞI VİSKOZİTE 220'),
+      findsOneWidget,
+    );
   });
 
-  testWidgets('Şanzıman tork bilgisi: listenin sonundaki tip (ZS 622FX/59) seçilebilir', (tester) async {
+  testWidgets('Şanzıman tork ve yağlama bilgisi: gres şanzımanda kg gösterilir (ZS612/87)', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await _openHomeTile(tester, 'Şanzıman Tork Bilgisi');
+    await _openHomeTile(tester, 'Şanzıman Tork ve Yağlama Bilgisi');
+    await tester.tap(find.byType(DropdownButton<String>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('ZS612/87').last);
+    await tester.pumpAndSettle();
+
+    // Tablo: ZS612/87 -> 630 Nm, Gres, 0,3 kg.
+    expect(find.text('630'), findsOneWidget);
+    expect(find.text('Gres'), findsOneWidget);
+    expect(find.text('0,3'), findsOneWidget);
+    expect(find.text('kg'), findsOneWidget);
+  });
+
+  testWidgets('Şanzıman tork ve yağlama bilgisi: listenin sonundaki tip (ZS 622FX/59) seçilebilir', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    await _openHomeTile(tester, 'Şanzıman Tork ve Yağlama Bilgisi');
 
     await tester.tap(find.byType(DropdownButton<String>));
     await tester.pumpAndSettle();
@@ -235,6 +266,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('15.880'), findsOneWidget);
+    expect(find.text('Sıvı'), findsOneWidget);
+    expect(find.text('6'), findsOneWidget); // 6 L
   });
 
   testWidgets('Diferansiyel hız: ikinci modda helezon devri hesaplanır', (tester) async {

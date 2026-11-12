@@ -33,7 +33,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       _unitIndex[field.key] = 0;
     }
     for (final field in widget.spec.choiceFields) {
-      _choices[field.key] = field.options.first.value;
+      _choices[field.key] = field.defaultValue ?? field.options.first.value;
     }
   }
 
@@ -45,13 +45,14 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     super.dispose();
   }
 
-  bool _isVisible(NumberFieldSpec field) {
-    final rule = field.showWhen;
+  bool _showRule(Map<String, String>? rule) {
     if (rule == null) {
       return true;
     }
     return rule.entries.every((e) => _choices[e.key] == e.value);
   }
+
+  bool _isVisible(NumberFieldSpec field) => _showRule(field.showWhen);
 
   void _calculate() {
     FocusScope.of(context).unfocus();
@@ -95,6 +96,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   Widget _buildChoiceField(ChoiceFieldSpec field) {
     return Padding(
+      key: ValueKey('choice-${field.key}'),
       padding: const EdgeInsets.only(bottom: 16),
       child: InputDecorator(
         decoration: InputDecoration(
@@ -238,7 +240,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             children: [
               Text(spec.description, style: theme.textTheme.bodyMedium),
               const SizedBox(height: 16),
-              for (final field in spec.choiceFields) _buildChoiceField(field),
+              for (final field in spec.choiceFields.where((f) => _showRule(f.showWhen)))
+                _buildChoiceField(field),
               for (final field in spec.numberFields.where(_isVisible)) _buildNumberField(field),
               Row(
                 children: [

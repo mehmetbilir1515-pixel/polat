@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'main_bearing_lubrication_screen.dart';
 import 'scroll_bearing_lubrication_screen.dart';
 
-/// DEKANTÖR YAĞLAMA BİLGİSİ: önce Main Bearing / Helezon Rulmanı seçilir.
+/// Dekantör Yağlama Bilgisi: önce Main Bearing / Helezon Rulmanı seçilir.
 class BearingLubricationScreen extends StatelessWidget {
   const BearingLubricationScreen({super.key});
 
@@ -64,7 +64,7 @@ class BearingLubricationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('DEKANTÖR YAĞLAMA BİLGİSİ')),
+      appBar: AppBar(title: const Text('Dekantör Yağlama Bilgisi')),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:polat_rd/app.dart';
+import 'package:polat_rd/screens/home_screen.dart';
 
 /// Ana ekran listesi tembel kurulur: kartı önce kurdurur, sonra ekrana tam getirir
 /// (kurulmuş ama ekranın dışında kalan karta dokunmak boşa gider).
@@ -14,24 +15,104 @@ Future<void> _scrollToHomeTile(WidgetTester tester, String title) async {
   await tester.pumpAndSettle();
 }
 
+/// Ana ekran kartını (tembel listede) görünür alana getirip açar.
+Future<void> _openHomeTile(WidgetTester tester, String title) async {
+  await _scrollToHomeTile(tester, title);
+  await tester.tap(find.text(title));
+  await tester.pumpAndSettle();
+}
+
 void main() {
-  testWidgets('Ana ekran başlığı ve ilk araç görünür', (tester) async {
+  testWidgets('Ana ekran başlığı ve ilk ekran görünür', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
     expect(find.text('POLAT R&D'), findsOneWidget);
     expect(find.byType(Image), findsOneWidget); // P logosu
-    // Liste tembel kurulur; G-Force kartı için önce kaydır.
-    await _scrollToHomeTile(tester, 'G-Force (RCF) Hesaplayıcı');
-    expect(find.text('G-Force (RCF) Hesaplayıcı'), findsOneWidget);
+    expect(find.text('Dekantör Model Değerleri'), findsOneWidget); // 1. ekran
+  });
+
+  test('Ana ekran sırası kullanıcının belirlediği sıradadır (13 ekran)', () {
+    // Kasnak boyutu ve kasnak hızı tek ekranda birleşti (8. ekran).
+    const expected = [
+      'Dekantör Model Değerleri',
+      'Diferansiyel Hız Hesaplayıcı',
+      'Dekantör Şanzıman Motor Bilgisi',
+      'Şanzıman Tork Bilgisi',
+      'G-Force (RCF) Hesaplayıcı',
+      'Dekantör Motor Dönüş Yönü',
+      'Kayış Uzunluğu Hesaplayıcı',
+      'Kasnak Hesaplayıcı',
+      'Dekantör 3000G Verileri',
+      'Dekantör Yağlama Bilgisi',
+      'Dekantör Kütle Denkliği',
+      'Kuru Katı Madde Hesaplayıcı',
+      'Debi Dönüştürücü',
+    ];
+    expect([for (final e in buildHomeEntries()) e.title], expected);
+  });
+
+  testWidgets('Kasnak hesaplayıcı: boyut modu ve hız modu (ikisi tek ekranda)', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    await _openHomeTile(tester, 'Kasnak Hesaplayıcı');
+
+    // Varsayılan mod: kasnak boyutu. Elle hesap: D2 = D1 · N1 / N2 = 150 · 1750 / 875 = 300 mm.
+    expect(find.text('Hesaplanacak kasnak'), findsOneWidget);
+    expect(find.widgetWithText(TextField, 'Hedef devir (ekipman)'), findsOneWidget);
+    await tester.enterText(find.byType(TextField).at(0), '150');
+    await tester.enterText(find.byType(TextField).at(1), '1750');
+    await tester.enterText(find.byType(TextField).at(2), '875');
+    await tester.tap(find.text('Hesapla'));
+    await tester.pump();
+    expect(find.text('300,0 mm'), findsOneWidget);
+
+    // Hız moduna geçince eski sonuç temizlenir ve alanlar değişir.
+    await tester.tap(find.byType(DropdownButton<String>).first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Kasnak hızını hesapla').last);
+    await tester.pumpAndSettle();
+    expect(find.text('300,0 mm'), findsNothing);
+    expect(find.text('Hesaplanacak kasnak'), findsNothing);
+    expect(find.widgetWithText(TextField, 'Tahrik edilen kasnak çapı'), findsOneWidget);
+
+    // Elle hesap: N2 = N1 · D1 / D2 = 1750 · 150 / 300 = 875 RPM.
+    await tester.enterText(find.byType(TextField).at(0), '1750');
+    await tester.enterText(find.byType(TextField).at(1), '150');
+    await tester.enterText(find.byType(TextField).at(2), '300');
+    await tester.tap(find.text('Hesapla'));
+    await tester.pump();
+    expect(find.text('875,0 RPM'), findsOneWidget);
+  });
+
+  testWidgets('Debi dönüştürücü: varsayılan m³/h; yeni birimlerle çeviri', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    await _openHomeTile(tester, 'Debi Dönüştürücü');
+
+    // Çevrilecek birim varsayılan olarak m³/h.
+    final fromDropdown = tester.widget<DropdownButton<String>>(find.byType(DropdownButton<String>).first);
+    expect(fromDropdown.value, 'm3h');
+
+    // 100 m³/h -> L/dk (varsayılan hedef): bağımsız hesap 1666,667.
+    await tester.enterText(find.byType(TextField).at(0), '100');
+    await tester.tap(find.text('Hesapla'));
+    await tester.pump();
+    expect(find.text('1.666,667 L/dk (LPM)'), findsOneWidget);
+  });
+
+  testWidgets('Kuru Katı Madde Hesaplayıcı ana ekranda bu adla açılır', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    await _openHomeTile(tester, 'Kuru Katı Madde Hesaplayıcı');
+    expect(find.text('Kuru Katı Madde Hesaplayıcı'), findsOneWidget); // AppBar başlığı
+    expect(find.text('Santrifüj Throughput Hesaplayıcı'), findsNothing);
   });
 
   testWidgets('G-Force aracı sonucu gösterir', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
     // Kart listenin altında kalabilir; dokunmadan önce görünür alana kaydır.
-    await _scrollToHomeTile(tester, 'G-Force (RCF) Hesaplayıcı');
-    await tester.tap(find.text('G-Force (RCF) Hesaplayıcı'));
-    await tester.pumpAndSettle();
+    await _openHomeTile(tester, 'G-Force (RCF) Hesaplayıcı');
 
     await tester.enterText(find.byType(TextField).at(0), '500');
     await tester.enterText(find.byType(TextField).at(1), '3000');
@@ -45,9 +126,7 @@ void main() {
   testWidgets('G-Force: ikinci modda santrifüj kuvvetinden devir hesaplanır', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await _scrollToHomeTile(tester, 'G-Force (RCF) Hesaplayıcı');
-    await tester.tap(find.text('G-Force (RCF) Hesaplayıcı'));
-    await tester.pumpAndSettle();
+    await _openHomeTile(tester, 'G-Force (RCF) Hesaplayıcı');
 
     expect(find.widgetWithText(TextField, 'Devir (RPM)'), findsOneWidget);
     expect(find.widgetWithText(TextField, 'Santrifüj Kuvveti'), findsNothing);
@@ -70,9 +149,7 @@ void main() {
   testWidgets('Dekantör şanzıman motor bilgisi: seçim yapılınca yapılandırmalar görünür', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await _scrollToHomeTile(tester, 'Dekantör Şanzıman Motor Bilgisi');
-    await tester.tap(find.text('Dekantör Şanzıman Motor Bilgisi'));
-    await tester.pumpAndSettle();
+    await _openHomeTile(tester, 'Dekantör Şanzıman Motor Bilgisi');
 
     // Seçim yapılmadan bilgi yok.
     expect(find.text('Şanzıman Tipi'), findsNothing);
@@ -98,9 +175,7 @@ void main() {
   testWidgets('Dekantör şanzıman motor bilgisi: tek yapılandırma; X tire, YOK olduğu gibi', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await _scrollToHomeTile(tester, 'Dekantör Şanzıman Motor Bilgisi');
-    await tester.tap(find.text('Dekantör Şanzıman Motor Bilgisi'));
-    await tester.pumpAndSettle();
+    await _openHomeTile(tester, 'Dekantör Şanzıman Motor Bilgisi');
 
     await tester.tap(find.byType(DropdownButton<String>));
     await tester.pumpAndSettle();
@@ -127,9 +202,7 @@ void main() {
   testWidgets('Şanzıman tork bilgisi: tip seçince maks. tork dayanımı görünür', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await _scrollToHomeTile(tester, 'Şanzıman Tork Bilgisi');
-    await tester.tap(find.text('Şanzıman Tork Bilgisi'));
-    await tester.pumpAndSettle();
+    await _openHomeTile(tester, 'Şanzıman Tork Bilgisi');
 
     // Seçim yapılmadan değer yok.
     expect(find.text('Maks. Tork Dayanımı'), findsNothing);
@@ -147,9 +220,7 @@ void main() {
   testWidgets('Şanzıman tork bilgisi: listenin sonundaki tip (ZS 622FX/59) seçilebilir', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await _scrollToHomeTile(tester, 'Şanzıman Tork Bilgisi');
-    await tester.tap(find.text('Şanzıman Tork Bilgisi'));
-    await tester.pumpAndSettle();
+    await _openHomeTile(tester, 'Şanzıman Tork Bilgisi');
 
     await tester.tap(find.byType(DropdownButton<String>));
     await tester.pumpAndSettle();
@@ -170,9 +241,7 @@ void main() {
     await tester.pumpWidget(const PolatApp());
 
     // Kart listenin altında; tembel listede önce kaydır.
-    await _scrollToHomeTile(tester, 'Diferansiyel Hız Hesaplayıcı');
-    await tester.tap(find.text('Diferansiyel Hız Hesaplayıcı'));
-    await tester.pumpAndSettle();
+    await _openHomeTile(tester, 'Diferansiyel Hız Hesaplayıcı');
 
     // Varsayılan mod: helezon devri girilir.
     expect(find.widgetWithText(TextField, 'Helezon Devri'), findsOneWidget);
@@ -215,8 +284,7 @@ void main() {
   testWidgets('Kütle denkliği ekranı örnek değerlerle sonuç gösterir', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await tester.tap(find.text('Dekantör Kütle Denkliği'));
-    await tester.pumpAndSettle();
+    await _openHomeTile(tester, 'Dekantör Kütle Denkliği');
 
     // Hesap sayfasındaki örnek: 7 m³/h, %1,13 besleme, %18 kek, %0,05 sentrat
     expect(find.text('421,17 kg/h'), findsOneWidget); // kek çıkışı
@@ -226,11 +294,10 @@ void main() {
     expect(find.text('1.000 mg/L'), findsOneWidget); // %0,10 -> AKM
   });
 
-  testWidgets('POLAT DECANTER 3000G: model seçince hedef devir ve uyarı görünür', (tester) async {
+  testWidgets('Dekantör 3000G Verileri: model seçince hedef devir ve uyarı görünür', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await tester.tap(find.text('POLAT DECANTER 3000G'));
-    await tester.pumpAndSettle();
+    await _openHomeTile(tester, 'Dekantör 3000G Verileri');
 
     // Model seçilmeden sonuç yok.
     expect(find.text('Hedef 3000G Devri'), findsNothing);
@@ -247,11 +314,10 @@ void main() {
     expect(find.text("Mevcut Çalışma Devri 3000G'yi Sağlamaktadır."), findsNothing);
   });
 
-  testWidgets('POLAT DECANTER 3000G: S200 zaten 3000G sağlıyor', (tester) async {
+  testWidgets('Dekantör 3000G Verileri: S200 zaten 3000G sağlıyor', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await tester.tap(find.text('POLAT DECANTER 3000G'));
-    await tester.pumpAndSettle();
+    await _openHomeTile(tester, 'Dekantör 3000G Verileri');
     await tester.tap(find.byType(DropdownButton<String>));
     await tester.pumpAndSettle();
     await tester.tap(find.text('S200').last);
@@ -266,8 +332,7 @@ void main() {
   testWidgets('Dekantör model değerleri: model seçince değerler görünür', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await tester.tap(find.text('Dekantör Model Değerleri'));
-    await tester.pumpAndSettle();
+    await _openHomeTile(tester, 'Dekantör Model Değerleri');
 
     // Model seçilmeden değer yok.
     expect(find.text('Hidrolik Kapasite'), findsNothing);
@@ -285,8 +350,7 @@ void main() {
   testWidgets('Dekantör model değerleri: S470 için 10° ve 15° çapları birlikte görünür', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await tester.tap(find.text('Dekantör Model Değerleri'));
-    await tester.pumpAndSettle();
+    await _openHomeTile(tester, 'Dekantör Model Değerleri');
     expect(find.text('Katı Çıkış Çapı'), findsNothing);
 
     await tester.tap(find.byType(DropdownButton<String>));
@@ -307,8 +371,7 @@ void main() {
   testWidgets('Dekantör model değerleri: tek yapılı modelde (S200) açı etiketi yok', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await tester.tap(find.text('Dekantör Model Değerleri'));
-    await tester.pumpAndSettle();
+    await _openHomeTile(tester, 'Dekantör Model Değerleri');
     await tester.tap(find.byType(DropdownButton<String>));
     await tester.pumpAndSettle();
     await tester.tap(find.text('S200').last);
@@ -319,11 +382,10 @@ void main() {
     expect(find.textContaining('°'), findsNothing);
   });
 
-  testWidgets('DEKANTÖR YAĞLAMA BİLGİSİ: Main/Helezon seçimi ve endüstriyel model', (tester) async {
+  testWidgets('Dekantör Yağlama Bilgisi: Main/Helezon seçimi ve endüstriyel model', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await tester.tap(find.text('DEKANTÖR YAĞLAMA BİLGİSİ'));
-    await tester.pumpAndSettle();
+    await _openHomeTile(tester, 'Dekantör Yağlama Bilgisi');
     expect(find.text('Main Bearing'), findsOneWidget);
     expect(find.text('Helezon Rulmanı'), findsOneWidget);
 
@@ -353,11 +415,10 @@ void main() {
     expect(find.text("SKF'te Ara"), findsNWidgets(2));
   });
 
-  testWidgets('DEKANTÖR YAĞLAMA BİLGİSİ: Zeytinyağı sekmesi ve model', (tester) async {
+  testWidgets('Dekantör Yağlama Bilgisi: Zeytinyağı sekmesi ve model', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await tester.tap(find.text('DEKANTÖR YAĞLAMA BİLGİSİ'));
-    await tester.pumpAndSettle();
+    await _openHomeTile(tester, 'Dekantör Yağlama Bilgisi');
     await tester.tap(find.text('Helezon Rulmanı'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Zeytinyağı'));
@@ -381,11 +442,10 @@ void main() {
     expect(find.text('PX20 Yağlama Bilgisi'), findsNothing);
   });
 
-  testWidgets('DEKANTÖR MOTOR DÖNÜŞ YÖNÜ: model süzgeci ve yön rozetleri', (tester) async {
+  testWidgets('Dekantör Motor Dönüş Yönü: model süzgeci ve yön rozetleri', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await tester.tap(find.text('DEKANTÖR MOTOR DÖNÜŞ YÖNÜ'));
-    await tester.pumpAndSettle();
+    await _openHomeTile(tester, 'Dekantör Motor Dönüş Yönü');
     expect(find.text('40 kayıt'), findsOneWidget);
 
     await tester.tap(find.byKey(const ValueKey('filter-model')));
@@ -403,11 +463,10 @@ void main() {
     expect(find.text('SAAT YÖNÜ', skipOffstage: false), findsOneWidget);
   });
 
-  testWidgets('DEKANTÖR MOTOR DÖNÜŞ YÖNÜ: kayıt yoksa uyarı, temizleyince tümü', (tester) async {
+  testWidgets('Dekantör Motor Dönüş Yönü: kayıt yoksa uyarı, temizleyince tümü', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await tester.tap(find.text('DEKANTÖR MOTOR DÖNÜŞ YÖNÜ'));
-    await tester.pumpAndSettle();
+    await _openHomeTile(tester, 'Dekantör Motor Dönüş Yönü');
 
     await tester.tap(find.byKey(const ValueKey('filter-model')));
     await tester.pumpAndSettle();
@@ -434,8 +493,7 @@ void main() {
   testWidgets('Kütle denkliği: hata bandı açılıp kapanırken yazılan kutu odağını korur', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await tester.tap(find.text('Dekantör Kütle Denkliği'));
-    await tester.pumpAndSettle();
+    await _openHomeTile(tester, 'Dekantör Kütle Denkliği');
 
     final cakeField = find.byKey(const ValueKey('field-cakeSolids'));
     final cakeEditable = find.descendant(
@@ -471,8 +529,7 @@ void main() {
   testWidgets('Kütle denkliği: yalnızca rakam, virgül ve nokta girilebilir', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await tester.tap(find.text('Dekantör Kütle Denkliği'));
-    await tester.pumpAndSettle();
+    await _openHomeTile(tester, 'Dekantör Kütle Denkliği');
 
     final flowField = find.byKey(const ValueKey('field-flow'));
     await tester.enterText(flowField, '1a2,5x');
@@ -483,8 +540,7 @@ void main() {
   testWidgets('Kütle denkliği debi değişince güncellenir ve hatayı gösterir', (tester) async {
     await tester.pumpWidget(const PolatApp());
 
-    await tester.tap(find.text('Dekantör Kütle Denkliği'));
-    await tester.pumpAndSettle();
+    await _openHomeTile(tester, 'Dekantör Kütle Denkliği');
 
     // Debi iki katına çıkınca kek çıkışı da iki katına çıkar.
     await tester.enterText(find.byType(TextField).at(0), '14');

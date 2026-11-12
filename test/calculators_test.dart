@@ -247,6 +247,30 @@ void main() {
       );
     });
 
+    // Beklenen değerler bağımsız bir Python hesabından (1 gal = 3,785411784 L, 1 ft³ = 28,316846592 L).
+    test('yeni birimler: m3/h, m3/s, L/s, CFM, GPH, GPD, m3/gün, L/h', () {
+      expect(convertFlowRate(100, FlowUnit.m3h, FlowUnit.lpm), closeTo(1666.6666667, 1e-6));
+      expect(convertFlowRate(1, FlowUnit.m3s, FlowUnit.m3h), closeTo(3600, 1e-9));
+      expect(convertFlowRate(10, FlowUnit.ls, FlowUnit.m3h), closeTo(36, 1e-9));
+      expect(convertFlowRate(1, FlowUnit.cfm, FlowUnit.m3h), closeTo(1.69901079552, 1e-9));
+      expect(convertFlowRate(100, FlowUnit.gph, FlowUnit.lpm), closeTo(6.30901964, 1e-8));
+      expect(convertFlowRate(1000, FlowUnit.gpd, FlowUnit.m3day), closeTo(3.785411784, 1e-9));
+      expect(convertFlowRate(5, FlowUnit.m3day, FlowUnit.lh), closeTo(208.3333333, 1e-6));
+      expect(convertFlowRate(120, FlowUnit.cfh, FlowUnit.cfm), closeTo(2, 1e-12));
+      expect(convertFlowRate(1, FlowUnit.m3min, FlowUnit.ls), closeTo(16.6666667, 1e-6));
+    });
+
+    test('ilk birim m³/h; her birim için gidiş-dönüş tutarlıdır', () {
+      expect(FlowUnit.values.first, FlowUnit.m3h);
+      expect(FlowUnit.values.length, 13);
+      for (final a in FlowUnit.values) {
+        for (final b in FlowUnit.values) {
+          final there = convertFlowRate(123.456, a, b);
+          expect(convertFlowRate(there, b, a), closeTo(123.456, 1e-9), reason: '$a $b');
+        }
+      }
+    });
+
     test('aynı birime çevirme değeri değiştirmez', () {
       expect(convertFlowRate(42, FlowUnit.lpm, FlowUnit.lpm), closeTo(42, 1e-12));
     });

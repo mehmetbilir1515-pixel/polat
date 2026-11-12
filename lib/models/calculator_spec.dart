@@ -39,11 +39,19 @@ class ChoiceFieldSpec {
     required this.key,
     required this.label,
     required this.options,
+    this.defaultValue,
+    this.showWhen,
   });
 
   final String key;
   final String label;
   final List<ChoiceOption> options;
+
+  /// Başlangıçta seçili değer; verilmezse ilk seçenek.
+  final String? defaultValue;
+
+  /// Verilirse seçim alanı yalnızca diğer seçim alanlarının hepsi bu değerlerdeyse görünür.
+  final Map<String, String>? showWhen;
 }
 
 class ResultItem {

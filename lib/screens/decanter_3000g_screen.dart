@@ -7,7 +7,7 @@ import '../widgets/model_selector.dart';
 const Color _passGreen = Color(0xFF28A745);
 const Color _failRed = Color(0xFFDC3545);
 
-/// POLAT DECANTER 3000G: seçilen dekantör modelinin 3000G kontrolünü gösterir.
+/// Dekantör 3000G Verileri: seçilen dekantör modelinin 3000G kontrolünü gösterir.
 class Decanter3000gScreen extends StatefulWidget {
   const Decanter3000gScreen({super.key});
 
@@ -201,7 +201,7 @@ class _Decanter3000gScreenState extends State<Decanter3000gScreen> {
     final theme = Theme.of(context);
     final analysis = _analysis;
     return Scaffold(
-      appBar: AppBar(title: const Text('POLAT DECANTER 3000G')),
+      appBar: AppBar(title: const Text('Dekantör 3000G Verileri')),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),

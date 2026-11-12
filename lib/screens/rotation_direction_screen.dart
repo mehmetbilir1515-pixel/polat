@@ -5,7 +5,7 @@ import '../theme.dart';
 
 const _all = '__all__';
 
-/// DEKANTÖR MOTOR DÖNÜŞ YÖNÜ: model, şanzıman ve motor tipine göre dönüş yönü
+/// Dekantör Motor Dönüş Yönü: model, şanzıman ve motor tipine göre dönüş yönü
 /// talimatı (AG-TL-09 Rev.04). Süzgeçler "Tümü" olabilir; sonuçlar anında güncellenir.
 class RotationDirectionScreen extends StatefulWidget {
   const RotationDirectionScreen({super.key});
@@ -198,7 +198,7 @@ class _RotationDirectionScreenState extends State<RotationDirectionScreen> {
       motor: _criterion(_motor),
     );
     return Scaffold(
-      appBar: AppBar(title: const Text('DEKANTÖR MOTOR DÖNÜŞ YÖNÜ')),
+      appBar: AppBar(title: const Text('Dekantör Motor Dönüş Yönü')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

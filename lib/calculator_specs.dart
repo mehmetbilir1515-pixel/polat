@@ -181,7 +181,7 @@ final List<CalculatorSpec> calculatorSpecs = [
   CalculatorSpec(
     id: 'flow-rate',
     title: 'Debi Dönüştürücü',
-    description: 'GPM, LPM, m³/saat ve BPD arasında çeviri yapar.',
+    description: 'm³/h, L/dk, GPM, BPD, CFM ve diğer debi birimleri arasında çeviri yapar (varsayılan: m³/h).',
     icon: Icons.water_drop_outlined,
     choiceFields: [
       ChoiceFieldSpec(
@@ -194,6 +194,7 @@ final List<CalculatorSpec> calculatorSpecs = [
       ChoiceFieldSpec(
         key: 'to',
         label: 'Hedef birim',
+        defaultValue: 'lpm',
         options: [
           for (final u in FlowUnit.values) ChoiceOption(u.name, flowUnitLabel(u)),
         ],
@@ -217,47 +218,6 @@ final List<CalculatorSpec> calculatorSpecs = [
             'Eşdeğer: ${flowUnitLabel(u)}',
             formatNumber(convertFlowRate(n['value']!, from, u), decimals: 3),
           ),
-      ];
-    },
-  ),
-
-  // 4) Kasnak hızı
-  CalculatorSpec(
-    id: 'pulley-speed',
-    title: 'Kasnak Hızı Hesaplayıcı',
-    description: 'Motor devri ve kasnak çaplarından çıkış mili devrini hesaplar.',
-    icon: Icons.settings_outlined,
-    numberFields: const [
-      NumberFieldSpec(
-        key: 'motorRpm',
-        label: 'Motor devri',
-        units: [UnitOption('RPM', 1)],
-      ),
-      NumberFieldSpec(
-        key: 'motorPulley',
-        label: 'Motor kasnağı çapı',
-        units: _pulleyUnits,
-      ),
-      NumberFieldSpec(
-        key: 'drivenPulley',
-        label: 'Tahrik edilen kasnak çapı',
-        units: _pulleyUnits,
-      ),
-    ],
-    calculate: (n, c) {
-      final speed = drivenSpeedRpm(
-        motorRpm: n['motorRpm']!,
-        motorPulleyDiameter: n['motorPulley']!,
-        drivenPulleyDiameter: n['drivenPulley']!,
-      );
-      final ratio = n['motorPulley']! / n['drivenPulley']!;
-      return [
-        ResultItem(
-          'Çıkış mili devri',
-          '${formatNumber(speed, decimals: 1)} RPM',
-          primary: true,
-        ),
-        ResultItem('Hız oranı (çıkış / motor)', formatNumber(ratio, decimals: 3)),
       ];
     },
   ),
@@ -334,7 +294,7 @@ final List<CalculatorSpec> calculatorSpecs = [
   // 6) Santrifüj throughput
   CalculatorSpec(
     id: 'throughput',
-    title: 'Santrifüj Throughput Hesaplayıcı',
+    title: 'Kuru Katı Madde Hesaplayıcı',
     description: 'Giren kuru katı miktarını (ton/gün) tahmin eder.',
     icon: Icons.scale_outlined,
     numberFields: const [
@@ -383,16 +343,26 @@ final List<CalculatorSpec> calculatorSpecs = [
     },
   ),
 
-  // 7) Kasnak boyutu
+  // 7) Kasnak hesaplayıcı: kasnak boyutu + kasnak hızı (iki mod)
   CalculatorSpec(
-    id: 'pulley-size',
-    title: 'Kasnak Boyutu Hesaplayıcı',
-    description: 'Hedef devir için gereken kasnak çapını hesaplar.',
+    id: 'pulley',
+    title: 'Kasnak Hesaplayıcı',
+    description:
+        'Hedef devir için gereken kasnak çapını ya da motor devri ve kasnak çaplarından çıkış mili devrini hesaplar.',
     icon: Icons.straighten,
     choiceFields: const [
       ChoiceFieldSpec(
+        key: 'mode',
+        label: 'Hesaplama modu',
+        options: [
+          ChoiceOption('size', 'Kasnak boyutunu hesapla'),
+          ChoiceOption('speed', 'Kasnak hızını hesapla'),
+        ],
+      ),
+      ChoiceFieldSpec(
         key: 'solveFor',
         label: 'Hesaplanacak kasnak',
+        showWhen: {'mode': 'size'},
         options: [
           ChoiceOption('drivenPulley', 'Tahrik edilen kasnak'),
           ChoiceOption('motorPulley', 'Motor kasnağı'),
@@ -400,30 +370,69 @@ final List<CalculatorSpec> calculatorSpecs = [
       ),
     ],
     numberFields: const [
+      // Kasnak boyutu modu
       NumberFieldSpec(
         key: 'other',
         label: 'Diğer kasnağın çapı',
         units: _pulleyUnits,
+        showWhen: {'mode': 'size'},
       ),
       NumberFieldSpec(
-        key: 'motorRpm',
+        key: 'sizeMotorRpm',
         label: 'Motor devri',
         units: [UnitOption('RPM', 1)],
+        showWhen: {'mode': 'size'},
       ),
       NumberFieldSpec(
         key: 'drivenRpm',
         label: 'Hedef devir (ekipman)',
         units: [UnitOption('RPM', 1)],
+        showWhen: {'mode': 'size'},
+      ),
+      // Kasnak hızı modu
+      NumberFieldSpec(
+        key: 'motorRpm',
+        label: 'Motor devri',
+        units: [UnitOption('RPM', 1)],
+        showWhen: {'mode': 'speed'},
+      ),
+      NumberFieldSpec(
+        key: 'motorPulley',
+        label: 'Motor kasnağı çapı',
+        units: _pulleyUnits,
+        showWhen: {'mode': 'speed'},
+      ),
+      NumberFieldSpec(
+        key: 'drivenPulley',
+        label: 'Tahrik edilen kasnak çapı',
+        units: _pulleyUnits,
+        showWhen: {'mode': 'speed'},
       ),
     ],
     calculate: (n, c) {
+      if (c['mode'] == 'speed') {
+        final speed = drivenSpeedRpm(
+          motorRpm: n['motorRpm']!,
+          motorPulleyDiameter: n['motorPulley']!,
+          drivenPulleyDiameter: n['drivenPulley']!,
+        );
+        final ratio = n['motorPulley']! / n['drivenPulley']!;
+        return [
+          ResultItem(
+            'Çıkış mili devri',
+            '${formatNumber(speed, decimals: 1)} RPM',
+            primary: true,
+          ),
+          ResultItem('Hız oranı (çıkış / motor)', formatNumber(ratio, decimals: 3)),
+        ];
+      }
       final solveFor = c['solveFor'] == 'motorPulley'
           ? PulleySolveFor.motorPulley
           : PulleySolveFor.drivenPulley;
       final mm = requiredPulleyDiameter(
         solveFor: solveFor,
         otherPulleyDiameter: n['other']!,
-        motorRpm: n['motorRpm']!,
+        motorRpm: n['sizeMotorRpm']!,
         drivenRpm: n['drivenRpm']!,
       );
       return [

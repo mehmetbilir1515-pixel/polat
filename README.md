@@ -2,29 +2,44 @@
 
 Android ve iOS için mobil hesaplama araçları uygulaması (Flutter).
 
+## Ana ekran sırası
+
+1. Dekantör Model Değerleri
+2. Diferansiyel Hız Hesaplayıcı
+3. Dekantör Şanzıman Motor Bilgisi
+4. Şanzıman Tork Bilgisi
+5. G-Force (RCF) Hesaplayıcı
+6. Dekantör Motor Dönüş Yönü
+7. Kayış Uzunluğu Hesaplayıcı
+8. Kasnak Hesaplayıcı (kasnak boyutu + kasnak hızı)
+9. Dekantör 3000G Verileri
+10. Dekantör Yağlama Bilgisi
+11. Dekantör Kütle Denkliği
+12. Kuru Katı Madde Hesaplayıcı
+13. Debi Dönüştürücü
+
 ## Hesaplama araçları (ilk sürüm)
 
-**POLAT DECANTER 3000G** (ana ekranda ikinci sırada): dekantör modelini (S200 … SX920) seçince, 3000G için gereken devre göre arka rulman, şanzıman limitleri ve tambur dayanımı (Sb/Sf) kontrol edilir; her kart geçti/kaldı olarak gösterilir. S200, S300 ve S350 zaten 3000G'yi sağlar.
+**Dekantör 3000G Verileri**: dekantör modelini (S200 … SX920) seçince, 3000G için gereken devre göre arka rulman, şanzıman limitleri ve tambur dayanımı (Sb/Sf) kontrol edilir; her kart geçti/kaldı olarak gösterilir. S200, S300 ve S350 zaten 3000G'yi sağlar.
 
-**DEKANTÖR YAĞLAMA BİLGİSİ** (ana ekranda dördüncü sırada): önce **Main Bearing** veya **Helezon Rulmanı** seçilir. Helezon Rulmanı'nda **Endüstriyel** ya da **Zeytinyağı** dekantörü, ardından model seçilir; yağ miktarı (g), basım sayısı, rulman tipi/kodu ve ölçüleri gösterilir, "SKF'te Ara" düğmesi SKF sitesinde rulman tipini arar. Main Bearing verisi henüz eklenmedi.
+**Dekantör Yağlama Bilgisi**: önce **Main Bearing** veya **Helezon Rulmanı** seçilir. Helezon Rulmanı'nda **Endüstriyel** ya da **Zeytinyağı** dekantörü, ardından model seçilir; yağ miktarı (g), basım sayısı, rulman tipi/kodu ve ölçüleri gösterilir, "SKF'te Ara" düğmesi SKF sitesinde rulman tipini arar. Main Bearing verisi henüz eklenmedi.
 
-**DEKANTÖR MOTOR DÖNÜŞ YÖNÜ** (ana ekranda beşinci sırada): model, şanzıman tipi ve motor tipi (ana / helezon) süzgeçleriyle dönüş yönü talimatını (AG-TL-09 Rev.04) gösterir; "SAAT YÖNÜ" yeşil, "SAAT YÖNÜ TERSİ" kırmızı rozetle belirtilir. Süzgeçler "Tümü" olabilir, "Filtreleri Temizle" düğmesi hepsini sıfırlar.
+**Dekantör Motor Dönüş Yönü**: model, şanzıman tipi ve motor tipi (ana / helezon) süzgeçleriyle dönüş yönü talimatını (AG-TL-09 Rev.04) gösterir; "SAAT YÖNÜ" yeşil, "SAAT YÖNÜ TERSİ" kırmızı rozetle belirtilir. Süzgeçler "Tümü" olabilir, "Filtreleri Temizle" düğmesi hepsini sıfırlar.
 
-**Dekantör Şanzıman Motor Bilgisi** (ana ekranda altıncı sırada): Excel'deki "Konfigürasyon" sayfasından; **seri kodu ve tambur çapı** seçilince tambur/helezon motor gücü ve devri, şanzıman tipi ve torku, tambur konik açısı, kasnak ölçüleri ve 50 Hz devirleri gösterilir. Bir seçim için birden çok yapılandırma varsa (ör. S470: 13) hepsi ayrı kart olarak listelenir.
+**Dekantör Şanzıman Motor Bilgisi**: Excel'deki "Konfigürasyon" sayfasından; **seri kodu ve tambur çapı** seçilince tambur/helezon motor gücü ve devri, şanzıman tipi ve torku, tambur konik açısı, kasnak ölçüleri ve 50 Hz devirleri gösterilir. Bir seçim için birden çok yapılandırma varsa (ör. S470: 13) hepsi ayrı kart olarak listelenir.
 
 **Şanzıman Tork Bilgisi**: şanzıman tipini (ZS612/87 … DESCH ZG50) seçince maksimum tork dayanımı (Nm) görünür; 28 şanzıman.
 
-**Dekantör Model Değerleri** (ana ekranda üçüncü sırada): modeli seçince maksimum çalışma devri, maksimum gövde devri, hidrolik kapasite (m³/h), katı çıkış çapı ve helezon boru çapı (mm) görünür. S470, S530, S570 ve SX650'de 10° ve 15° yapıların çapları aynı model girişinde birlikte gösterilir (S670'te yalnızca 10°). Modeller: S200, S300, S350, S430, S470, S530, S570, SX650, S670.
+**Dekantör Model Değerleri**: modeli seçince maksimum çalışma devri, maksimum gövde devri, hidrolik kapasite (m³/h), katı çıkış çapı ve helezon boru çapı (mm) görünür. S470, S530, S570 ve SX650'de 10° ve 15° yapıların çapları aynı model girişinde birlikte gösterilir (S670'te yalnızca 10°). Modeller: S200, S300, S350, S430, S470, S530, S570, SX650, S670.
 
-**Dekantör Kütle Denkliği** (ana ekranda ilk sırada): ürün debisi (m³/h), yoğunluk (kg/m³) ve besleme/kek/sentrat kuru katı oranlarından kek ve sentrat kütle akışlarını, polimer tüketimini (kg/tDS), yakalama verimini, günlük değerleri ve % → AKM (mg/L) dönüşümünü hesaplar. Değerler yazıldıkça sonuçlar anında güncellenir.
+**Dekantör Kütle Denkliği**: ürün debisi (m³/h), yoğunluk (kg/m³) ve besleme/kek/sentrat kuru katı oranlarından kek ve sentrat kütle akışlarını, polimer tüketimini (kg/tDS), yakalama verimini, günlük değerleri ve % → AKM (mg/L) dönüşümünü hesaplar. Değerler yazıldıkça sonuçlar anında güncellenir.
 
-1. **G-Force (RCF)**: iki modlu. "Santrifüj kuvvetini hesapla": tambur iç çapı ve devirden santrifüj kuvveti. "Devri hesapla": tambur iç çapı ve hedef santrifüj kuvvetinden (g) gereken devir
-2. **Diferansiyel hız**: iki modlu. "Diferansiyel hızı hesapla": tambur devri, helezon devri, dişli kutusu oranı ve şanzıman tipine (İleri (ZS) / Geri (ZSPN)) göre hız farkı. "Helezon devrini hesapla": tambur devri, hedef diferansiyel hız, oran ve şanzıman tipinden gereken helezon devri (İleri (ZS): tambur − fark·oran; Geri (ZSPN): fark·oran − tambur; sonuç negatifse hata verir)
-3. **Debi dönüştürücü**: GPM, LPM, m³/saat, BPD
-4. **Kasnak hızı**: motor devri ve kasnak çaplarından çıkış mili devri
-5. **Kayış uzunluğu**: kasnak çapları ve eksen mesafesinden tahmini kayış boyu
-6. **Throughput**: debi (m³/h), yoğunluk (kg/m³), katı oranı ve çalışma saatinden kuru katı (ton/gün)
-7. **Kasnak boyutu**: hedef devir için gereken kasnak çapı
+- **G-Force (RCF)**: iki modlu. "Santrifüj kuvvetini hesapla": tambur iç çapı ve devirden santrifüj kuvveti. "Devri hesapla": tambur iç çapı ve hedef santrifüj kuvvetinden (g) gereken devir
+- **Diferansiyel hız**: iki modlu. "Diferansiyel hızı hesapla": tambur devri, helezon devri, dişli kutusu oranı ve şanzıman tipine (İleri (ZS) / Geri (ZSPN)) göre hız farkı. "Helezon devrini hesapla": tambur devri, hedef diferansiyel hız, oran ve şanzıman tipinden gereken helezon devri (İleri (ZS): tambur − fark·oran; Geri (ZSPN): fark·oran − tambur; sonuç negatifse hata verir)
+- **Debi dönüştürücü**: m³/h (varsayılan), m³/dk, m³/s, m³/gün, L/dk, L/s, L/h, GPM, GPH, GPD, BPD, CFM ve ft³/h arasında çeviri
+- **Kasnak hesaplayıcı**: iki modlu. "Kasnak boyutunu hesapla": hedef devir için gereken kasnak çapı. "Kasnak hızını hesapla": motor devri ve kasnak çaplarından çıkış mili devri
+- **Kayış uzunluğu**: kasnak çapları ve eksen mesafesinden tahmini kayış boyu
+- **Kuru Katı Madde Hesaplayıcı** (eski adı Santrifüj Throughput): debi (m³/h), yoğunluk (kg/m³), katı oranı ve çalışma saatinden kuru katı (ton/gün)
 
 > Sonuçlar mühendislik tahminidir. Ekipman değişikliği veya sipariş öncesinde üretici/tedarikçi bilgileriyle doğrulayın.
 

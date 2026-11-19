@@ -97,11 +97,25 @@ List<HomeEntry> buildHomeEntries() => [
     ];
 
 /// Ana ekran: dekantör ekranları ve hesaplama araçlarının sıralı listesi.
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   /// İlk görünümde sıralı belirme uygulanan kart sayısı (sonrakiler tembel kurulur, animasyonsuz).
   static const int _animatedCount = 8;
+
+  /// Belirme yalnızca ilk karede kurulan kartlara uygulanır; kaydırınca yeniden oynamaz.
+  bool _firstFrame = true;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _firstFrame = false);
+  }
 
   Widget _tile(BuildContext context, HomeEntry entry, int index) {
     final theme = Theme.of(context);
@@ -164,7 +178,7 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
-    return index < _animatedCount ? EntranceFade(index: index, child: tile) : tile;
+    return _firstFrame && index < _animatedCount ? EntranceFade(index: index, child: tile) : tile;
   }
 
   @override

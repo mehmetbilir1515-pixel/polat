@@ -77,9 +77,10 @@ class _PressableScaleState extends State<PressableScale> with SingleTickerProvid
   }
 }
 
-/// İlk gösterimde hafifçe yukarıdan kayarak beliren öğe (sıralı gecikmeli).
+/// İlk gösterimde yumuşakça beliren öğe (sıralı gecikmeli).
+/// Yalnızca saydamlık değişir: öğe yerinden oynamaz, bu yüzden dokunma hedefi ve
+/// kaydırma konumu belirme sırasında değişmez; azaltılmış hareket ile de uyumludur.
 /// Zamanlayıcı kullanmaz; gecikme tek bir denetleyici içinde aralık olarak kodlanır.
-/// Azaltılmış hareket açıkken yalnızca saydamlık geçişi yapılır, kayma yoktur.
 class EntranceFade extends StatefulWidget {
   const EntranceFade({super.key, required this.index, required this.child});
 
@@ -117,20 +118,6 @@ class _EntranceFadeState extends State<EntranceFade> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    final reduce = reduceMotion(context);
-    return AnimatedBuilder(
-      animation: _curve,
-      builder: (context, child) {
-        final t = _curve.value;
-        return Opacity(
-          opacity: t,
-          child: Transform.translate(
-            offset: reduce ? Offset.zero : Offset(0, (1 - t) * 14),
-            child: child,
-          ),
-        );
-      },
-      child: widget.child,
-    );
+    return FadeTransition(opacity: _curve, child: widget.child);
   }
 }

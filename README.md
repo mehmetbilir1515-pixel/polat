@@ -115,4 +115,4 @@ Değişiklikler gönderilmeden önce sahibinin onayından geçer. Ayrıntılar i
 
 ## Tasarım
 
-Arayüz Apple Human Interface Guidelines'tan ilham alır: sade kartlar, yaylı dokunma geri bildirimi, iOS tarzı sayfa geçişi, açık/koyu tema (sistem ayarını izler) ve hareketi azalt desteği. Marka renkleri RAL 5004 ve RAL 1003 korunur.
+Arayüz Apple Human Interface Guidelines'tan ilham alır: sade kartlar, yaylı dokunma geri bildirimi, iOS tarzı sayfa geçişi, açık/koyu tema (varsayılan açık; Ana ekrandaki Görünüm düğmesinden Açık, Koyu veya Sistem seçilir ve saklanır) ve hareketi azalt desteği. Marka renkleri RAL 5004 ve RAL 1003 korunur.

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../calculator_specs.dart';
 import '../design/motion.dart';
 import '../theme.dart';
+import '../theme_controller.dart';
 import 'bearing_lubrication_screen.dart';
 import 'calculator_screen.dart';
 import 'decanter_3000g_screen.dart';
@@ -181,6 +182,57 @@ class _HomeScreenState extends State<HomeScreen> {
     return _firstFrame && index < _animatedCount ? EntranceFade(index: index, child: tile) : tile;
   }
 
+  void _showThemePicker(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: ValueListenableBuilder<ThemeMode>(
+          valueListenable: themeModeNotifier,
+          builder: (context, mode, _) => Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Görünüm',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 12),
+                SegmentedButton<ThemeMode>(
+                  showSelectedIcon: false,
+                  segments: const [
+                    ButtonSegment(
+                      value: ThemeMode.light,
+                      icon: Icon(Icons.light_mode_outlined),
+                      label: Text('Açık'),
+                    ),
+                    ButtonSegment(
+                      value: ThemeMode.dark,
+                      icon: Icon(Icons.dark_mode_outlined),
+                      label: Text('Koyu'),
+                    ),
+                    ButtonSegment(
+                      value: ThemeMode.system,
+                      icon: Icon(Icons.phone_iphone_outlined),
+                      label: Text('Sistem'),
+                    ),
+                  ],
+                  selected: {mode},
+                  onSelectionChanged: (s) {
+                    HapticFeedback.selectionClick();
+                    setThemeMode(s.first);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final entries = buildHomeEntries();
@@ -202,6 +254,13 @@ class _HomeScreenState extends State<HomeScreen> {
             const Text('POLAT R&D'),
           ],
         ),
+        actions: [
+          IconButton(
+            tooltip: 'Görünüm',
+            icon: const Icon(Icons.brightness_6_outlined),
+            onPressed: () => _showThemePicker(context),
+          ),
+        ],
       ),
       body: ListView.separated(
         padding: EdgeInsets.fromLTRB(

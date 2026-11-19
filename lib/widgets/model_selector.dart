@@ -12,6 +12,9 @@ class ModelSelector extends StatelessWidget {
     this.title = 'DEKANTÖR MODELİ SEÇİNİZ',
   });
 
+  /// Seçim yapılmadığında kutuda görünen yönlendirme: başlık + "..." (boş gelmez).
+  String get _hint => '$title...';
+
   final List<String> models;
   final String? value;
   final ValueChanged<String?> onChanged;
@@ -54,7 +57,7 @@ class ModelSelector extends StatelessWidget {
                 // Koyu temada menü zemini açık kalır; metin rengi RAL 5004 olduğu için okunur.
                 dropdownColor: isDark(context) ? Colors.white : null,
                 value: value,
-                hint: const Text('-- Listeden Seçin --'),
+                hint: Text(_hint),
                 style: const TextStyle(
                   color: ral5004,
                   fontSize: 16,

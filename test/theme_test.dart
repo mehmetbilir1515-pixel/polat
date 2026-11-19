@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:polat_rd/app.dart';
 import 'package:polat_rd/theme.dart';
+import 'package:polat_rd/theme_controller.dart';
 
 void main() {
   test('Açık tema marka renklerini değiştirmeden korur', () {
@@ -25,8 +26,8 @@ void main() {
   });
 
   testWidgets('Koyu temada ana ekran açılır ve bir ekrana girilip geri dönülebilir', (tester) async {
-    tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
-    addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
+    themeModeNotifier.value = ThemeMode.dark;
+    addTearDown(() => themeModeNotifier.value = ThemeMode.light);
 
     await tester.pumpWidget(const PolatApp());
     await tester.pumpAndSettle();
@@ -34,7 +35,7 @@ void main() {
 
     await tester.tap(find.text('Dekantör Model Değerleri'));
     await tester.pumpAndSettle();
-    expect(find.text('-- Listeden Seçin --'), findsOneWidget);
+    expect(find.text('DEKANTÖR MODELİ SEÇİNİZ...'), findsOneWidget);
 
     await tester.pageBack();
     await tester.pumpAndSettle();
@@ -51,6 +52,28 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Dekantör Model Değerleri'));
     await tester.pumpAndSettle();
-    expect(find.text('-- Listeden Seçin --'), findsOneWidget);
+    expect(find.text('DEKANTÖR MODELİ SEÇİNİZ...'), findsOneWidget);
+  });
+
+  testWidgets('Varsayılan tema açıktır; Görünüm menüsünden Koyu seçilebilir ve geri Açık yapılabilir',
+      (tester) async {
+    themeModeNotifier.value = ThemeMode.light;
+    addTearDown(() => themeModeNotifier.value = ThemeMode.light);
+
+    await tester.pumpWidget(const PolatApp());
+    await tester.pumpAndSettle();
+    expect(Theme.of(tester.element(find.text('POLAT R&D'))).brightness, Brightness.light);
+
+    await tester.tap(find.byTooltip('Görünüm'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Koyu'));
+    await tester.pumpAndSettle();
+    expect(themeModeNotifier.value, ThemeMode.dark);
+    expect(Theme.of(tester.element(find.text('POLAT R&D'))).brightness, Brightness.dark);
+
+    await tester.tap(find.text('Açık'));
+    await tester.pumpAndSettle();
+    expect(themeModeNotifier.value, ThemeMode.light);
+    expect(Theme.of(tester.element(find.text('POLAT R&D'))).brightness, Brightness.light);
   });
 }

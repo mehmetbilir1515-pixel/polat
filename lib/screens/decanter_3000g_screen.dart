@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../calculators/decanter_3000g.dart';
 import '../format.dart';
+import '../theme.dart';
 import '../widgets/model_selector.dart';
 
 const Color _passGreen = Color(0xFF28A745);
@@ -71,10 +72,10 @@ class _Decanter3000gScreenState extends State<Decanter3000gScreen> {
             Text(
               label,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF888888),
+                color: subtleColor(context),
               ),
             ),
             const SizedBox(height: 8),
@@ -147,9 +148,9 @@ class _Decanter3000gScreenState extends State<Decanter3000gScreen> {
                           ],
                         ],
                       ),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
-                        color: Color(0xFF666666),
+                        color: mutedColor(context),
                         fontStyle: FontStyle.italic,
                       ),
                     ),

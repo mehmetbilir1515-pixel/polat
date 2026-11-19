@@ -12,6 +12,8 @@ class PolatApp extends StatelessWidget {
       title: 'POLAT R&D',
       debugShowCheckedModeBanner: false,
       theme: buildPolatTheme(),
+      darkTheme: buildPolatDarkTheme(),
+      themeMode: ThemeMode.system,
       home: const HomeScreen(),
     );
   }

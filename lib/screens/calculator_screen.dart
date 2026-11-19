@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../calculators/validation.dart';
 import '../format.dart';
 import '../models/calculator_spec.dart';
+import '../theme.dart';
 
 /// Bir [CalculatorSpec] tanımından otomatik oluşturulan hesaplama ekranı.
 class CalculatorScreen extends StatefulWidget {
@@ -70,6 +72,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     }
     try {
       final results = widget.spec.calculate(numbers, Map.of(_choices));
+      HapticFeedback.selectionClick();
       setState(() {
         _results = results;
         _error = null;
@@ -189,11 +192,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   Widget _buildResults(BuildContext context) {
     final theme = Theme.of(context);
+    final onCard = theme.colorScheme.onPrimaryContainer;
     return Card(
       color: theme.colorScheme.primaryContainer,
-      margin: const EdgeInsets.only(top: 8),
+      margin: const EdgeInsets.only(top: 16),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -204,19 +208,19 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(item.label, style: theme.textTheme.labelLarge),
+                          Text(item.label, style: theme.textTheme.labelLarge?.copyWith(color: onCard)),
                           Text(
                             item.value,
                             style: theme.textTheme.headlineSmall
-                                ?.copyWith(fontWeight: FontWeight.bold),
+                                ?.copyWith(fontWeight: FontWeight.bold, color: onCard),
                           ),
                         ],
                       )
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(item.label, style: theme.textTheme.labelMedium),
-                          Text(item.value, style: theme.textTheme.bodyMedium),
+                          Text(item.label, style: theme.textTheme.labelMedium?.copyWith(color: onCard)),
+                          Text(item.value, style: theme.textTheme.bodyMedium?.copyWith(color: onCard)),
                         ],
                       ),
               ),
@@ -238,7 +242,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(spec.description, style: theme.textTheme.bodyMedium),
+              Text(
+                spec.description,
+                style: theme.textTheme.bodyMedium?.copyWith(color: mutedColor(context), height: 1.4),
+              ),
               const SizedBox(height: 16),
               for (final field in spec.choiceFields.where((f) => _showRule(f.showWhen)))
                 _buildChoiceField(field),
@@ -259,11 +266,25 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 ],
               ),
               if (_error != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 16),
-                  child: Text(
-                    _error!,
-                    style: TextStyle(color: theme.colorScheme.error),
+                Container(
+                  margin: const EdgeInsets.only(top: 16),
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.error.withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(Icons.error_outline_rounded, color: theme.colorScheme.error, size: 22),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          _error!,
+                          style: TextStyle(color: theme.colorScheme.error),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               if (_results != null) _buildResults(context),

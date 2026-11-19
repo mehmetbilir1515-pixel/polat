@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../calculators/gearbox_torque.dart';
 import '../format.dart';
 import '../widgets/gearbox_lubrication_guide.dart';
+import '../theme.dart';
 import '../widgets/model_selector.dart';
 
 /// Şanzıman tork ve yağlama bilgisi: şanzıman tipini seçince maksimum tork dayanımı (Nm),
@@ -27,10 +28,10 @@ class _GearboxTorqueScreenState extends State<GearboxTorqueScreen> {
             Text(
               label,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF666666),
+                color: mutedColor(context),
               ),
             ),
             const SizedBox(height: 6),
@@ -47,7 +48,7 @@ class _GearboxTorqueScreenState extends State<GearboxTorqueScreen> {
                   const SizedBox(width: 6),
                   Text(
                     unit,
-                    style: const TextStyle(fontSize: 16, color: Color(0xFF888888)),
+                    style: TextStyle(fontSize: 16, color: subtleColor(context)),
                   ),
                 ],
               ],

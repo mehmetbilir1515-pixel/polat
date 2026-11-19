@@ -165,12 +165,17 @@ class _MassBalanceScreenState extends State<MassBalanceScreen> {
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       textInputAction: TextInputAction.next,
       inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]'))],
+      // Dolgu rengi (sarı) her iki temada aynıdır; koyu temada yazı RAL 5004 olur ki okunsun.
+      style: isDark(context) ? const TextStyle(color: ral5004) : null,
       decoration: InputDecoration(
         labelText: label,
         suffixText: unit,
         filled: true,
         fillColor: _inputFill,
         border: const OutlineInputBorder(),
+        labelStyle: isDark(context) ? const TextStyle(color: Color(0xFF5B5E6B)) : null,
+        floatingLabelStyle: isDark(context) ? const TextStyle(color: ral5004) : null,
+        suffixStyle: isDark(context) ? const TextStyle(color: ral5004) : null,
       ),
       onChanged: (_) => setState(_compute),
     );

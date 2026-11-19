@@ -112,3 +112,7 @@ flutter run
 ## Katkı kuralı
 
 Değişiklikler gönderilmeden önce sahibinin onayından geçer. Ayrıntılar için `CLAUDE.md` dosyasına bakın.
+
+## Tasarım
+
+Arayüz Apple Human Interface Guidelines'tan ilham alır: sade kartlar, yaylı dokunma geri bildirimi, iOS tarzı sayfa geçişi, açık/koyu tema (sistem ayarını izler) ve hareketi azalt desteği. Marka renkleri RAL 5004 ve RAL 1003 korunur.

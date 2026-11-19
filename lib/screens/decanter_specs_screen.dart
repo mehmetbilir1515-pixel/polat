@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../calculators/decanter_specs.dart';
 import '../format.dart';
 import '../widgets/model_selector.dart';
+import '../theme.dart';
 
 /// Dekantör model değerleri: modeli seçince maksimum çalışma devri, gövde devri
 /// hidrolik kapasite, katı çıkış çapı ve helezon boru çapı gösterilir.
@@ -35,10 +36,10 @@ class _DecanterSpecsScreenState extends State<DecanterSpecsScreen> {
             Text(
               label,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF666666),
+                color: mutedColor(context),
               ),
             ),
             const SizedBox(height: 8),
@@ -48,7 +49,7 @@ class _DecanterSpecsScreenState extends State<DecanterSpecsScreen> {
             ),
             Text(
               unit,
-              style: const TextStyle(fontSize: 13, color: Color(0xFF888888)),
+              style: TextStyle(fontSize: 13, color: subtleColor(context)),
             ),
           ],
         ),
@@ -71,10 +72,10 @@ class _DecanterSpecsScreenState extends State<DecanterSpecsScreen> {
             Text(
               label,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF666666),
+                color: mutedColor(context),
               ),
             ),
             const SizedBox(height: 8),
@@ -88,10 +89,10 @@ class _DecanterSpecsScreenState extends State<DecanterSpecsScreen> {
                   children: [
                     Text(
                       '${d.angleDeg}°',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF666666),
+                        color: mutedColor(context),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -100,9 +101,9 @@ class _DecanterSpecsScreenState extends State<DecanterSpecsScreen> {
                       style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(width: 6),
-                    const Text(
+                    Text(
                       'mm',
-                      style: TextStyle(fontSize: 13, color: Color(0xFF888888)),
+                      style: TextStyle(fontSize: 13, color: subtleColor(context)),
                     ),
                   ],
                 ),

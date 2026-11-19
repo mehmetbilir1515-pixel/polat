@@ -34,19 +34,26 @@ class _RotationDirectionScreenState extends State<RotationDirectionScreen> {
       children: [
         Text(
           label,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 13,
+            letterSpacing: 0.3,
+          ),
         ),
         const SizedBox(height: 6),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(6),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               key: key,
               isExpanded: true,
+              borderRadius: BorderRadius.circular(14),
+              dropdownColor: isDark(context) ? Colors.white : null,
               value: value,
               style: const TextStyle(color: ral5004, fontSize: 15, fontWeight: FontWeight.bold),
               items: [
@@ -71,7 +78,8 @@ class _RotationDirectionScreenState extends State<RotationDirectionScreen> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: ral5004,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(18),
+        border: isDark(context) ? Border.all(color: Colors.white.withValues(alpha: 0.10)) : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -158,7 +166,7 @@ class _RotationDirectionScreenState extends State<RotationDirectionScreen> {
             _directionBadge(e.direction),
             if (e.note.isNotEmpty) ...[
               const SizedBox(height: 8),
-              Text(e.note, style: const TextStyle(fontSize: 13, color: Color(0xFF2C5282))),
+              Text(e.note, style: TextStyle(fontSize: 13, color: noteBlueColor(context))),
             ],
           ],
         ),
@@ -169,14 +177,14 @@ class _RotationDirectionScreenState extends State<RotationDirectionScreen> {
   Widget _notes() {
     Widget p(String text) => Padding(
           padding: const EdgeInsets.symmetric(vertical: 4),
-          child: Text(text, style: const TextStyle(fontSize: 13)),
+          child: Text(text, style: const TextStyle(fontSize: 13, color: ral5004)),
         );
     return Container(
       margin: const EdgeInsets.only(top: 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: const Color(0xFFFEF9E6),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(18),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -217,12 +225,18 @@ class _RotationDirectionScreenState extends State<RotationDirectionScreen> {
           ),
           const SizedBox(height: 8),
           if (results.isEmpty)
-            const Card(
+            Card(
               child: Padding(
-                padding: EdgeInsets.all(24),
-                child: Text(
-                  'Seçilen kriterlere uygun kayıt bulunamadı. Filtreleri genişletin.',
-                  textAlign: TextAlign.center,
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  children: [
+                    Icon(Icons.search_off_rounded, size: 36, color: subtleColor(context)),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Seçilen kriterlere uygun kayıt bulunamadı. Filtreleri genişletin.',
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
               ),
             )
@@ -230,10 +244,10 @@ class _RotationDirectionScreenState extends State<RotationDirectionScreen> {
             for (final e in results) _entryCard(e),
           _notes(),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             'Talimat No: AG-TL-09 Rev.04 | Yürürlük Tarihi: 2026-02\nÜretim / Saha Servis İçin Standart Doküman',
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 11, color: Color(0xFF5A6E7C)),
+            style: TextStyle(fontSize: 11, color: footnoteColor(context)),
           ),
         ],
       ),

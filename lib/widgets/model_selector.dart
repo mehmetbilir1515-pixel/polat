@@ -25,7 +25,8 @@ class ModelSelector extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: ral5004,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(18),
+        border: isDark(context) ? Border.all(color: Colors.white.withValues(alpha: 0.10)) : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -33,18 +34,25 @@ class ModelSelector extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.4,
+            ),
           ),
           const SizedBox(height: 12),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
                 isExpanded: true,
+                borderRadius: BorderRadius.circular(14),
+                // Koyu temada menü zemini açık kalır; metin rengi RAL 5004 olduğu için okunur.
+                dropdownColor: isDark(context) ? Colors.white : null,
                 value: value,
                 hint: const Text('-- Listeden Seçin --'),
                 style: const TextStyle(

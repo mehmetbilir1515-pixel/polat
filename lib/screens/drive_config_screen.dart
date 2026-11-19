@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../calculators/drive_config.dart';
 import '../format.dart';
 import '../widgets/model_selector.dart';
+import '../theme.dart';
 
 /// Dekantör şanzıman ve motor bilgisi: seri kodu ve tambur çapı seçilince Excel'deki
 /// "Konfigürasyon" sayfasının diğer sütunları gösterilir. Bir seçim için birden çok
@@ -32,7 +33,7 @@ class _DriveConfigScreenState extends State<DriveConfigScreen> {
             flex: 5,
             child: Text(
               label,
-              style: const TextStyle(fontSize: 13, color: Color(0xFF666666)),
+              style: TextStyle(fontSize: 13, color: mutedColor(context)),
             ),
           ),
           const SizedBox(width: 12),
@@ -122,10 +123,10 @@ class _DriveConfigScreenState extends State<DriveConfigScreen> {
                   ),
               ],
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 '"—": uygulanmaz (Excel\'te "X"), "YOK": ilgili kasnak bulunmaz.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: Color(0xFF666666)),
+                style: TextStyle(fontSize: 12, color: mutedColor(context)),
               ),
             ],
           ),

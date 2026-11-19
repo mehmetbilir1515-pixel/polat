@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../calculator_specs.dart';
+import '../design/motion.dart';
+import '../theme.dart';
 import 'bearing_lubrication_screen.dart';
 import 'calculator_screen.dart';
 import 'decanter_3000g_screen.dart';
@@ -97,24 +100,71 @@ List<HomeEntry> buildHomeEntries() => [
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  Widget _tile(BuildContext context, HomeEntry entry) {
+  /// İlk görünümde sıralı belirme uygulanan kart sayısı (sonrakiler tembel kurulur, animasyonsuz).
+  static const int _animatedCount = 8;
+
+  Widget _tile(BuildContext context, HomeEntry entry, int index) {
     final theme = Theme.of(context);
-    return Card(
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: theme.colorScheme.primaryContainer,
-          child: Icon(entry.icon, color: theme.colorScheme.onPrimaryContainer),
+    final scheme = theme.colorScheme;
+    final tile = MergeSemantics(
+      child: Semantics(
+        button: true,
+        child: PressableScale(
+          onTap: () {
+            HapticFeedback.selectionClick();
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => entry.screen()),
+            );
+          },
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(14, 14, 10, 14),
+              child: Row(
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: scheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Icon(entry.icon, size: 26, color: scheme.onPrimaryContainer),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          entry.title,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            height: 1.25,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          entry.subtitle,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: mutedColor(context),
+                            height: 1.35,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Icon(Icons.chevron_right, color: subtleColor(context)),
+                ],
+              ),
+            ),
+          ),
         ),
-        title: Text(entry.title),
-        subtitle: Text(entry.subtitle),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute<void>(builder: (_) => entry.screen()),
-          );
-        },
       ),
     );
+    return index < _animatedCount ? EntranceFade(index: index, child: tile) : tile;
   }
 
   @override
@@ -140,10 +190,15 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       body: ListView.separated(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.fromLTRB(
+          16,
+          20,
+          16,
+          24 + MediaQuery.paddingOf(context).bottom,
+        ),
         itemCount: entries.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 8),
-        itemBuilder: (context, index) => _tile(context, entries[index]),
+        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        itemBuilder: (context, index) => _tile(context, entries[index], index),
       ),
     );
   }

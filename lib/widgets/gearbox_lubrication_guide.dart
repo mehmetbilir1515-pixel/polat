@@ -24,7 +24,7 @@ class GearboxLubricationGuide extends StatelessWidget {
             const _Heading(oilBathSubtitle),
             const Text(oilBathText, style: _bodyStyle),
             const SizedBox(height: 12),
-            const _Figure(
+            const FigureView(
               figure: oilBathFigure,
               semanticLabel:
                   'Şekil 2: Yağ banyosu ile yağlama. Üst nokta ve kontrol tapası için işaretleme, yağ girişi ve yağ gözetleme.',
@@ -35,7 +35,7 @@ class GearboxLubricationGuide extends StatelessWidget {
         _GuideCard(
           title: greaseTitle,
           children: [
-            const _Figure(
+            const FigureView(
               figure: greaseFigure,
               semanticLabel:
                   'Şekil 6: Redüktörün yeniden yağlanması. 1 yüksek hızlı mil, 2 kontrol vidası, 3 halka dişli.',
@@ -420,8 +420,8 @@ class _GreaseTable extends StatelessWidget {
 
 /// Kılavuzdaki teknik çizim (Şekil 2 ve Şekil 6). Çizim, HTML'deki SVG'den üretilen
 /// `lubrication_figures.dart` verisiyle yeniden çizilir; her genişlikte oranı korur.
-class _Figure extends StatelessWidget {
-  const _Figure({required this.figure, required this.semanticLabel});
+class FigureView extends StatelessWidget {
+  const FigureView({super.key, required this.figure, required this.semanticLabel});
 
   final LubricationFigure figure;
   final String semanticLabel;
@@ -449,25 +449,51 @@ class _FigurePainter extends CustomPainter {
 
   final LubricationFigure figure;
 
-  Paint _stroke(double width) => Paint()
-    ..color = Colors.black
+  Paint _stroke(double width, [int color = 0xFF000000]) => Paint()
+    ..color = Color(color)
     ..style = PaintingStyle.stroke
     ..strokeWidth = width
-    ..strokeJoin = StrokeJoin.miter;
+    ..strokeCap = StrokeCap.round
+    ..strokeJoin = StrokeJoin.round;
 
-  Paint get _fill => Paint()
-    ..color = Colors.white
+  Paint _fillPaint(FigureShape s) => Paint()
+    ..color = Color(s.fillColor ?? 0xFFFFFFFF)
     ..style = PaintingStyle.fill;
 
   void _closed(Canvas c, FigureShape s, void Function(Canvas, Paint) draw) {
-    if (s.filled) draw(c, _fill);
-    if (s.strokeWidth > 0) draw(c, _stroke(s.strokeWidth));
+    if (s.filled || s.fillColor != null) draw(c, _fillPaint(s));
+    if (s.strokeWidth > 0) draw(c, _stroke(s.strokeWidth, s.strokeColor));
   }
 
-  void _dashed(Canvas c, Offset a, Offset b, double sw, List<double> pattern) {
+  /// SVG yol komutlarını (M, L, Q, C; mutlak) Path'e çevirir.
+  Path _parsePath(String d) {
+    final path = Path();
+    final tokens = RegExp(r'[MLQCZ]|-?\d*\.?\d+').allMatches(d).map((m) => m.group(0)!).toList();
+    var i = 0;
+    double n() => double.parse(tokens[i++]);
+    var cmd = '';
+    while (i < tokens.length) {
+      if (RegExp(r'[MLQCZ]').hasMatch(tokens[i])) cmd = tokens[i++];
+      switch (cmd) {
+        case 'M':
+          path.moveTo(n(), n());
+        case 'L':
+          path.lineTo(n(), n());
+        case 'Q':
+          path.quadraticBezierTo(n(), n(), n(), n());
+        case 'C':
+          path.cubicTo(n(), n(), n(), n(), n(), n());
+        case 'Z':
+          path.close();
+      }
+    }
+    return path;
+  }
+
+  void _dashed(Canvas c, Offset a, Offset b, double sw, List<double> pattern, int color) {
     final length = (b - a).distance;
     final dir = (b - a) / length;
-    final paint = _stroke(sw);
+    final paint = _stroke(sw, color);
     var pos = 0.0;
     var i = 0;
     while (pos < length) {
@@ -506,6 +532,15 @@ class _FigurePainter extends CustomPainter {
         case FigureKind.rect:
           final r = Rect.fromLTWH(v[0], v[1], v[2], v[3]);
           _closed(canvas, s, (c, p) => c.drawRect(r, p));
+        case FigureKind.rrect:
+          final rr = RRect.fromRectAndRadius(
+            Rect.fromLTWH(v[0], v[1], v[2], v[3]),
+            Radius.circular(v[4]),
+          );
+          _closed(canvas, s, (c, p) => c.drawRRect(rr, p));
+        case FigureKind.path:
+          final path = _parsePath(s.text!);
+          _closed(canvas, s, (c, p) => c.drawPath(path, p));
         case FigureKind.polygon:
           final path = Path()
             ..addPolygon([for (var i = 0; i < v.length; i += 2) Offset(v[i], v[i + 1])], true);
@@ -520,9 +555,9 @@ class _FigurePainter extends CustomPainter {
           final b = Offset(v[2], v[3]);
           final dash = s.dash;
           if (dash == null) {
-            canvas.drawLine(a, b, _stroke(s.strokeWidth));
+            canvas.drawLine(a, b, _stroke(s.strokeWidth, s.strokeColor));
           } else {
-            _dashed(canvas, a, b, s.strokeWidth, dash);
+            _dashed(canvas, a, b, s.strokeWidth, dash, s.strokeColor);
           }
         case FigureKind.text:
           _text(canvas, s);

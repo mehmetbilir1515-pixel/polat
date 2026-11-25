@@ -5,10 +5,11 @@
 // Veri değişirse HTML'deki SVG kaynak alınıp bu dosya yeniden üretilir.
 
 /// Çizim öğesinin türü.
-enum FigureKind { rect, polygon, ellipse, circle, line, text }
+enum FigureKind { rect, rrect, polygon, ellipse, circle, line, path, text }
 
 /// Tek bir çizim öğesi. [values] türe göre koordinatlardır:
-/// rect: x, y, genişlik, yükseklik; polygon: x1, y1, x2, y2, ...;
+/// rect: x, y, genişlik, yükseklik; rrect: x, y, genişlik, yükseklik, köşe yarıçapı;
+/// path: değer yok, SVG yol komutları [text] içinde (M, L, Q, C; mutlak koordinat); polygon: x1, y1, x2, y2, ...;
 /// ellipse: cx, cy, rx, ry; circle: cx, cy, r; line: x1, y1, x2, y2; text: x, y (taban çizgisi).
 class FigureShape {
   const FigureShape(
@@ -20,6 +21,8 @@ class FigureShape {
     this.text,
     this.fontSize = 0,
     this.bold = false,
+    this.strokeColor = 0xFF000000,
+    this.fillColor,
   });
 
   final FigureKind kind;
@@ -37,6 +40,12 @@ class FigureShape {
   final String? text;
   final double fontSize;
   final bool bold;
+
+  /// Çizgi rengi (ARGB).
+  final int strokeColor;
+
+  /// Dolgu rengi (ARGB); verilmişse [filled] yerine bu kullanılır.
+  final int? fillColor;
 }
 
 /// Görünüm kutusu (viewBox) boyutlarıyla birlikte bir şekil.

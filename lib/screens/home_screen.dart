@@ -12,6 +12,7 @@ import 'decanter_specs_screen.dart';
 import 'drive_config_screen.dart';
 import 'gearbox_torque_screen.dart';
 import 'mass_balance_screen.dart';
+import 'olive_decanter_params_screen.dart';
 import 'rotation_direction_screen.dart';
 
 /// Ana ekrandaki bir kart: özel ekran ya da tanımdan üretilen hesaplayıcı.
@@ -34,6 +35,13 @@ HomeEntry _fromSpec(String id) {
 
 /// Ana ekran kartlarının sırası (kullanıcının belirlediği sıra).
 List<HomeEntry> buildHomeEntries() => [
+      // 0 (en üstte): zeytinyağı dekantörü çalışma parametreleri
+      (
+        icon: Icons.opacity,
+        title: 'Zeytinyağı Dekantör Çalışma Parametreleri',
+        subtitle: 'PX / PXZ serisini seçin; model ve faza göre çalışma parametreleri, ürün giriş borusu ve su ayar sacı ölçüleri.',
+        screen: () => const OliveDecanterParamsScreen(),
+      ),
       // 1
       (
         icon: Icons.table_chart_outlined,

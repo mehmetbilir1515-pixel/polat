@@ -116,3 +116,5 @@ Değişiklikler gönderilmeden önce sahibinin onayından geçer. Ayrıntılar i
 ## Tasarım
 
 Arayüz Apple Human Interface Guidelines'tan ilham alır: sade kartlar, yaylı dokunma geri bildirimi, iOS tarzı sayfa geçişi, açık/koyu tema (varsayılan açık; Ana ekrandaki Görünüm düğmesinden Açık, Koyu veya Sistem seçilir ve saklanır) ve hareketi azalt desteği. Marka renkleri RAL 5004 ve RAL 1003 korunur.
+
+**Zeytinyağı Dekantör Çalışma Parametreleri** (ana ekranda ilk sırada): PX veya PXZ serisini seçin; Excel'deki çalışma değerlerini dekantör modeli ve faza göre süzün. Altında ürün giriş borusu ve su ayar sacı ölçü gösterimleri bulunur.

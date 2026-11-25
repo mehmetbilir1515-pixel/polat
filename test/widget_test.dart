@@ -28,12 +28,14 @@ void main() {
 
     expect(find.text('POLAT R&D'), findsOneWidget);
     expect(find.byType(Image), findsOneWidget); // P logosu
-    expect(find.text('Dekantör Model Değerleri'), findsOneWidget); // 1. ekran
+    expect(find.text('Zeytinyağı Dekantör Çalışma Parametreleri'), findsOneWidget); // 1. ekran
+    expect(find.text('Dekantör Model Değerleri'), findsOneWidget); // 2. ekran
   });
 
-  test('Ana ekran sırası kullanıcının belirlediği sıradadır (13 ekran)', () {
-    // Kasnak boyutu ve kasnak hızı tek ekranda birleşti (8. ekran).
+  test('Ana ekran sırası kullanıcının belirlediği sıradadır (14 ekran)', () {
+    // Kasnak boyutu ve kasnak hızı tek ekranda birleşti (9. ekran).
     const expected = [
+      'Zeytinyağı Dekantör Çalışma Parametreleri',
       'Dekantör Model Değerleri',
       'Diferansiyel Hız Hesaplayıcı',
       'Dekantör Şanzıman Motor Bilgisi',
@@ -49,6 +51,66 @@ void main() {
       'Debi Dönüştürücü',
     ];
     expect([for (final e in buildHomeEntries()) e.title], expected);
+  });
+
+  testWidgets('Zeytinyağı dekantör parametreleri: PXZ seç, model ve faza göre süz', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    await _openHomeTile(tester, 'Zeytinyağı Dekantör Çalışma Parametreleri');
+    expect(find.text('PX Serisi Dekantörler'), findsOneWidget);
+    expect(find.text('PX ÇALIŞMA DEĞERLERİ'), findsOneWidget);
+    expect(find.text('PXZ ÇALIŞMA DEĞERLERİ'), findsOneWidget);
+
+    await tester.tap(find.text('PXZ Serisi Dekantörler'));
+    await tester.pumpAndSettle();
+
+    // Süzme yokken PXZ sayfasının 16 satırının tamamı listelenir; ipuçları boş gelmez.
+    expect(find.text('16 kayıt'), findsOneWidget);
+    expect(find.text('DEKANTÖR MODELİ SEÇİNİZ...'), findsOneWidget);
+    expect(find.text('FAZ SEÇİNİZ...'), findsOneWidget);
+
+    // Model: PXZ 100 (2 faz kaydı)
+    await tester.tap(find.byType(DropdownButton<String>).first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('PXZ 100').last);
+    await tester.pumpAndSettle();
+    expect(find.text('2 kayıt'), findsOneWidget);
+
+    // Faz: 3 FAZ -> tek kayıt (MZ3007F, helezon devri 2096)
+    await tester.tap(find.byType(DropdownButton<String>).last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('3 FAZ').last);
+    await tester.pumpAndSettle();
+    expect(find.text('1 kayıt'), findsOneWidget);
+    expect(find.text('MZ3007F'), findsOneWidget);
+    expect(find.text('2096'), findsOneWidget);
+    expect(find.text('ürün giriş boyu sabittir'), findsOneWidget);
+
+    // Çalışma parametrelerinin altında iki ölçü gösterimi bulunur.
+    await tester.scrollUntilVisible(
+      find.text('Su Ayar Sacı Ölçü Gösterimi'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Ürün Giriş Borusu Ölçü Gösterimi'), findsOneWidget);
+    expect(find.text('Su Ayar Sacı Ölçü Gösterimi'), findsOneWidget);
+  });
+
+  testWidgets('Zeytinyağı dekantör parametreleri: PX seç, hücre değerleri olduğu gibi', (tester) async {
+    await tester.pumpWidget(const PolatApp());
+
+    await _openHomeTile(tester, 'Zeytinyağı Dekantör Çalışma Parametreleri');
+    await tester.tap(find.text('PX Serisi Dekantörler'));
+    await tester.pumpAndSettle();
+    expect(find.text('32 kayıt'), findsOneWidget);
+
+    await tester.tap(find.byType(DropdownButton<String>).first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('PX 5').last);
+    await tester.pumpAndSettle();
+    expect(find.text('2 kayıt'), findsOneWidget);
+    expect(find.text('PX 5 dekantör 3 faz çalıştırılamaz.'), findsOneWidget);
+    expect(find.text('4165,34'), findsOneWidget); // 2 FAZ satırı helezon devri
   });
 
   testWidgets('Kasnak hesaplayıcı: boyut modu ve hız modu (ikisi tek ekranda)', (tester) async {

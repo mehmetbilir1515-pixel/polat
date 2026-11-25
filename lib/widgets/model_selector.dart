@@ -10,6 +10,7 @@ class ModelSelector extends StatelessWidget {
     required this.value,
     required this.onChanged,
     this.title = 'DEKANTÖR MODELİ SEÇİNİZ',
+    this.labelFor,
   });
 
   /// Seçim yapılmadığında kutuda görünen yönlendirme: başlık + "..." (boş gelmez).
@@ -18,6 +19,9 @@ class ModelSelector extends StatelessWidget {
   final List<String> models;
   final String? value;
   final ValueChanged<String?> onChanged;
+
+  /// Listede gösterilen etiket (verilmezse değerin kendisi).
+  final String Function(String value)? labelFor;
 
   /// Kutunun üstündeki başlık.
   final String title;
@@ -65,7 +69,10 @@ class ModelSelector extends StatelessWidget {
                 ),
                 items: [
                   for (final name in models)
-                    DropdownMenuItem<String>(value: name, child: Text(name)),
+                    DropdownMenuItem<String>(
+                      value: name,
+                      child: Text(labelFor?.call(name) ?? name),
+                    ),
                 ],
                 onChanged: onChanged,
               ),
